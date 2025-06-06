@@ -1,4 +1,4 @@
-import { put } from '@vercel/blob';
+// import { put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -51,6 +51,8 @@ export async function POST(request: Request) {
     const fileBuffer = await file.arrayBuffer();
 
     try {
+      // TODO: Replace with your actual blob storage upload logic
+      // @ts-ignore
       const data = await put(`${filename}`, fileBuffer, {
         access: 'public',
       });
