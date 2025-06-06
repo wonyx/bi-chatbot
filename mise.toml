@@ -1,0 +1,3 @@
+[tools]
+cloud-sql-proxy = "2.16.0"
+gcloud = "524"
