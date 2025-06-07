@@ -66,11 +66,3 @@ pnpm dev
 ARTIFACT_REGISTRY=asia-northeast1-docker.pkg.dev/<your-project>/<repo-name>/bi-chatbot:latest
 docker build -t bi-chatbot .
 ```
-
-### Run locally
-```bash
-docker compose \
--f compose.yml \
--f compose.override.yml \
-up -d
-```
