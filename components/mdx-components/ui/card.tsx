@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  CardAction,
   Card as CardBase,
   CardContent,
   CardDescription,
@@ -21,8 +22,7 @@ export function Card(props: CardProps) {
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
-        {/* TODO */}
-        {/* <CardAction>{action}</CardAction> */}
+        <CardAction>{action}</CardAction>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         {children}

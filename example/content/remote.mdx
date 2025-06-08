@@ -46,7 +46,11 @@ Checkout my React component:
 <Card
 title="Frameworks"
 description="Frameworks with the most stars"
-
+action={<ComboboxDemo
+{...data.framework_select}
+searchParamKey="framework"
+/>
+}
 >
     <BarChart
     {...data.framework}
