@@ -1,4 +1,8 @@
+'use client';
+import { ChartAreaIcon, FileChartColumn, MessagesSquare } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 import React from 'react';
+import { NextLink } from './next-link';
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -6,13 +10,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from './ui/sidebar';
-import { NextLink } from './next-link';
-import { ChartAreaIcon, MessagesSquare } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
 
 const menuItems = [
   { name: 'Chat', href: '/', icon: <MessagesSquare /> },
-  { name: 'Reports', href: '/reports', icon: <ChartAreaIcon /> },
+  { name: 'Reports', href: '/reports', icon: <FileChartColumn /> },
 ];
 export type AppSidebarMenuProps = {};
 export function AppSidebarMenu(props: AppSidebarMenuProps) {
