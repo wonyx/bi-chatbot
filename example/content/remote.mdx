@@ -1,0 +1,62 @@
+---
+title: RSC Frontmatter Example
+layout: "portrait"
+
+sql:
+    random:
+        key: "queries:random.sql"
+    framework:
+        key: "queries:framework.sql"
+        content: |
+            SELECT name, star FROM frameworks
+            {%- if framework %}
+            WHERE name = '{{framework}}'
+            {%- endif %}
+            ORDER BY star DESC
+
+        description: "Query to fetch framework data based on user and time range."
+    framework_select:
+        key: "queries:framework_select.sql"
+        content: |
+            SELECT 
+              name as label,
+              name as value,
+            FROM frameworks
+            GROUP BY name
+            ORDER BY name
+        description: "Query to fetch framework data based on user and time range."
+        
+searchParams:
+    framework: ''
+    limit: 5
+---
+
+# Welcome to my MDX page!
+ 
+This is some **bold** and _italics_ text.
+ 
+This is a list in markdown:
+ 
+- One
+- Two
+- Three
+ 
+Checkout my React component:
+
+<Card
+title="Frameworks"
+description="Frameworks with the most stars"
+
+>
+    <BarChart
+    {...data.framework}
+    />
+</Card>
+
+<PieChart
+{...data.framework}
+/>
+>
+<AreaChart
+{...data.framework}
+/>
