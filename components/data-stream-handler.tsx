@@ -9,9 +9,10 @@ import { initialArtifactData, useArtifact } from '@/hooks/use-artifact';
 export type DataStreamDelta = {
   type:
     | 'text-delta'
-    | 'code-delta'
-    | 'sheet-delta'
-    | 'image-delta'
+    // | 'code-delta'
+    // | 'sheet-delta'
+    // | 'image-delta'
+    | 'report-delta'
     | 'title'
     | 'id'
     | 'suggestion'

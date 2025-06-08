@@ -7,6 +7,7 @@ import { DataStreamWriter } from 'ai';
 import { Document } from '../db/schema';
 import { saveDocument } from '../db/queries';
 import { Session } from 'next-auth';
+import { customDocumentHandler } from '@/artifacts/report/server';
 
 export interface SaveDocumentProps {
   id: string;
@@ -91,9 +92,16 @@ export function createDocumentHandler<T extends ArtifactKind>(config: {
  */
 export const documentHandlersByArtifactKind: Array<DocumentHandler> = [
   textDocumentHandler,
-  codeDocumentHandler,
-  imageDocumentHandler,
-  sheetDocumentHandler,
+  // codeDocumentHandler,
+  // imageDocumentHandler,
+  // sheetDocumentHandler,
+  customDocumentHandler,
 ];
 
-export const artifactKinds = ['text', 'code', 'image', 'sheet'] as const;
+export const artifactKinds = [
+  'text',
+  // 'code',
+  // 'image',
+  // 'sheet',
+  'report',
+] as const;

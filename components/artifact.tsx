@@ -28,12 +28,14 @@ import { textArtifact } from '@/artifacts/text/client';
 import equal from 'fast-deep-equal';
 import type { UseChatHelpers } from '@ai-sdk/react';
 import type { VisibilityType } from './visibility-selector';
+import { customArtifact } from '@/artifacts/report/client';
 
 export const artifactDefinitions = [
   textArtifact,
-  codeArtifact,
-  imageArtifact,
-  sheetArtifact,
+  // codeArtifact,
+  // imageArtifact,
+  // sheetArtifact,
+  customArtifact,
 ];
 export type ArtifactKind = (typeof artifactDefinitions)[number]['kind'];
 
