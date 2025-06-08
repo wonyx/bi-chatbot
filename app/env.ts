@@ -13,8 +13,8 @@ export const env = createEnv({
     // AI_MODEL: z.string().optional(),
     // GEMINI_API_KEY: z.string().optional(),
     // OLLAMA_API_URL: z.string().default('http://localhost:11434'),
-    // INIT_DB_DIR: z.string().default('example/initdb.d'),
-    // INIT_DB_SQL: z.string().default('init.sql'),
+    INIT_DB_DIR: z.string().default('example/initdb.d'),
+    INIT_DB_SQL: z.string().default('init.sql'),
   },
   runtimeEnv: {
     CONTENT_UNSTORAGE_DRIVER: process.env.CONTENT_UNSTORAGE_DRIVER,
@@ -28,7 +28,7 @@ export const env = createEnv({
     // AI_MODEL: process.env.AI_MODEL,
     // GEMINI_API_KEY: process.env.GEMINI_API_KEY,
     // OLLAMA_API_URL: process.env.OLLAMA_API_URL,
-    // INIT_DB_DIR: process.env.INIT_DB_DIR,
-    // INIT_DB_SQL: process.env.INIT_DB_SQL,
+    INIT_DB_DIR: process.env.INIT_DB_DIR,
+    INIT_DB_SQL: process.env.INIT_DB_SQL,
   },
 });

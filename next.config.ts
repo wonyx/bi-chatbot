@@ -9,6 +9,7 @@ const jiti = createJiti(fileURLToPath(import.meta.url));
 jiti('./app/env');
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
   output: 'standalone',
   experimental: {
     ppr: true,
@@ -20,6 +21,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  transpilePackages: [
+    'echarts',
+    'zrender',
+    'next-mdx-remote',
+    '@t3-oss/env-nextjs',
+    '@t3-oss/env-core',
+  ],
+  serverExternalPackages: ['@duckdb/node-api', '@duckdb/node-bindings'],
 };
 
 export default nextConfig;

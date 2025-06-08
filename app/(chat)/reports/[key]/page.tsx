@@ -1,6 +1,7 @@
 import { createDBClient } from '@/lib/duckdb/client';
 import { createContentStorage } from '@/lib/storage/client';
-import { MDXPage } from '@workspace/core/components/mdx-page';
+import { MDXPage } from '@/components/mdx-page';
+import { env } from '@/app/env';
 export type PageProps = {
   params: Promise<{
     key: string;
@@ -16,8 +17,11 @@ export default async function Page(props: PageProps) {
     props.searchParams,
   ]);
   console.log('params', params);
-  const storage = createContentStorage();
-  const dbClient = await createDBClient();
+  const storage = createContentStorage(env);
+  const dbClient = await createDBClient({
+    initSqlDir: env.INIT_DB_DIR,
+    initSqlFile: env.INIT_DB_SQL,
+  });
   console.log('after db');
   return (
     <MDXPage
