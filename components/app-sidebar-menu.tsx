@@ -37,7 +37,7 @@ function AppSidebarMenuItem(item: {
   const pathname = usePathname();
   const isActive = pathname === item.href;
   return (
-    <SidebarMenuItem key={item.name}>
+    <SidebarMenuItem>
       <SidebarMenuButton asChild isActive={isActive}>
         <NextLink href={item.href}>
           {item.icon}
