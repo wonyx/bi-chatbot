@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 export const env = createEnv({
   server: {
+    BASE_URL: z.string().url().default('http://localhost:3000'),
     CONTENT_UNSTORAGE_DRIVER: z.enum(['fs', 'github']).default('fs'),
     CONTENT_UNSTORAGE_FS_BASE: z.string().default('example/content'),
     CONTENT_UNSTORAGE_GITHUB_REPO: z.string().optional(),
@@ -17,6 +18,7 @@ export const env = createEnv({
     INIT_DB_SQL: z.string().default('init.sql'),
   },
   runtimeEnv: {
+    BASE_URL: process.env.BASE_URL || 'http://localhost:3000',
     CONTENT_UNSTORAGE_DRIVER: process.env.CONTENT_UNSTORAGE_DRIVER,
     CONTENT_UNSTORAGE_FS_BASE: process.env.CONTENT_UNSTORAGE_FS_BASE,
     CONTENT_UNSTORAGE_GITHUB_REPO: process.env.CONTENT_UNSTORAGE_GITHUB_REPO,
