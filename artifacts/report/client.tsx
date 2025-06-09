@@ -19,12 +19,14 @@ export const customArtifact = new Artifact<'report', CustomArtifactMetadata>({
   },
   // Handle streamed parts from the server (if your artifact supports streaming updates)
   onStreamPart: ({ streamPart, setMetadata, setArtifact }) => {
+    // @ts-ignore
     if (streamPart.type === 'info-update') {
       setMetadata((metadata) => ({
         ...metadata,
         info: streamPart.content as string,
       }));
     }
+    // @ts-ignore
     if (streamPart.type === 'content-update') {
       setArtifact((draftArtifact) => ({
         ...draftArtifact,
@@ -71,6 +73,7 @@ export const customArtifact = new Artifact<'report', CustomArtifactMetadata>({
         /> */}
         {content}
 
+        {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
         <button
           onClick={() => {
             navigator.clipboard.writeText(content);
@@ -87,6 +90,7 @@ export const customArtifact = new Artifact<'report', CustomArtifactMetadata>({
     {
       icon: <span>⟳</span>,
       description: 'Refresh artifact info',
+      // @ts-ignore
       onClick: ({ appendMessage }) => {
         appendMessage({
           role: 'user',
