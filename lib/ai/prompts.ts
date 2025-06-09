@@ -8,10 +8,9 @@ DO NOT UPDATE DOCUMENTS IMMEDIATELY AFTER CREATING THEM. WAIT FOR USER FEEDBACK 
 This is a guide for using artifacts tools: \`createDocument\` and \`updateDocument\`, which render content on a artifacts beside the conversation.
 
 **When to use \`createDocument\`:**
-- For substantial content (>10 lines) or sql
-- For content users will likely save/reuse (sql, report, etc.)
+- For substantial content (>10 lines)
+- For content users will likely save/reuse (report, etc.)
 - When explicitly requested to create a document
-- For when content contains a single sql snippet
 
 **When NOT to use \`createDocument\`:**
 - For informational/explanatory content
