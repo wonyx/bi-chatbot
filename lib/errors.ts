@@ -32,6 +32,7 @@ export const visibilityBySurface: Record<Surface, ErrorVisibility> = {
   vote: 'response',
   document: 'response',
   suggestions: 'response',
+  report: 'response',
 };
 
 export class ChatSDKError extends Error {
