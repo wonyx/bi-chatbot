@@ -28,6 +28,11 @@ function PureSuggestedActions({
       label: `Japan birth rate`,
       action: `Create a report about Japan birth rate`,
     },
+    {
+      title: 'Generate a SQL query for',
+      label: `Japan birth rate time series`,
+      action: `Generate a SQL query for Japan birth rate time series`,
+    },
   ];
 
   return (

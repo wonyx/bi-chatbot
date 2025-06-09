@@ -36,6 +36,7 @@ import type { Chat } from '@/lib/db/schema';
 import { differenceInSeconds } from 'date-fns';
 import { ChatSDKError } from '@/lib/errors';
 import { listTables } from '@/lib/ai/tools/list-tables';
+import { generateSQL } from '@/lib/ai/tools/generate-sql';
 
 export const maxDuration = 60;
 
@@ -160,6 +161,7 @@ export async function POST(request: Request) {
                   'updateDocument',
                   'requestSuggestions',
                   'listTables',
+                  'generateSQL',
                 ],
           experimental_transform: smoothStream({ chunking: 'word' }),
           experimental_generateMessageId: generateUUID,
@@ -171,6 +173,7 @@ export async function POST(request: Request) {
               dataStream,
             }),
             listTables,
+            generateSQL,
           },
           onFinish: async ({ response }) => {
             if (session.user?.id) {

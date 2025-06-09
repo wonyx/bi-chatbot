@@ -29,7 +29,7 @@ export async function GET(request: Request) {
         return {
           id: key,
           title: frontmatter.title || key,
-        } satisfies ReportListItem;
+        };
       }),
   );
   const data: ReportList = {

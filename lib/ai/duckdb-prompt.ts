@@ -103,7 +103,9 @@ Don't:
 - Execute queries without context
 - Ignore previous conversation context
 - Leave errors unexplained
+`;
 
+export const syntaxPrompt = `
 Here are some DuckDB SQL syntax specifics you should be aware of:
 - MotherDuck is compatible with DuckDB Syntax, Functions, Statements, Keywords
 - DuckDB use double quotes (") for identifiers that contain spaces or special characters, or to force case-sensitivity and single quotes (') to define string literals

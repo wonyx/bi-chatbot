@@ -23,16 +23,17 @@ export const myProvider = isTestEnvironment
     })
   : customProvider({
       languageModels: {
-        'chat-model': google('gemini-2.5-flash-preview-04-17'),
+        'chat-model': google('gemini-2.5-flash-preview-05-20'),
         'chat-model-reasoning': wrapLanguageModel({
-          model: google('gemini-2.5-flash-preview-04-17'),
+          model: google('gemini-2.5-flash-preview-05-20'),
           middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
-        'title-model': google('gemini-2.5-flash-preview-04-17'),
-        'artifact-model': google('gemini-2.5-flash-preview-04-17'),
+        'title-model': google('gemini-2.0-flash-lite'),
+        'sql-model': google('gemini-2.5-flash-preview-05-20'),
+        'artifact-model': google('gemini-2.5-flash-preview-05-20'),
       },
       imageModels: {
         // @ts-ignore
-        'small-model': google('gemini-2.5-pro-preview-05-06'),
+        'small-model': google('gemini-2.5-flash-preview-05-20'),
       },
     });
