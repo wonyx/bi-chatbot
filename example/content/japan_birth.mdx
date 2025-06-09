@@ -1,0 +1,24 @@
+---
+title: Japan Birth Example
+layout: landscape
+sql:
+    japan_birth:
+        content:
+            SELECT
+                year as '年',
+                birth_male as '男性',
+                birth_female as '女性',
+                birth_total as '合計',
+                birth_male / NULLIF(birth_total,0) as '男性比率',
+            FROM japan_birth 
+            ORDER BY year
+---
+
+## 日本の出生数
+
+<BarChart
+    x='年'
+    y={['男性','女性']}
+    stack
+    {...data.japan_birth}
+/>

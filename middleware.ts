@@ -47,7 +47,8 @@ export const config = {
     '/api/:path*',
     '/login',
     '/register',
-
+    '/reports',
+    '/reports/:key',
     /*
      * Match all request paths except for the ones starting with:
      * - _next/static (static files)
