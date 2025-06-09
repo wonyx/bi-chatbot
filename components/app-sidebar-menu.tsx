@@ -1,5 +1,5 @@
 'use client';
-import { ChartAreaIcon, FileChartColumn, MessagesSquare } from 'lucide-react';
+import { FileChartColumn, MessagesSquare } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import { NextLink } from './next-link';

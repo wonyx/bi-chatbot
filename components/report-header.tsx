@@ -1,5 +1,4 @@
 import { Separator } from '@/components/ui/separator';
-import { SidebarTrigger } from '@/components/ui/sidebar';
 import { SidebarToggle } from './sidebar-toggle';
 
 type ReportHeaderProps = {

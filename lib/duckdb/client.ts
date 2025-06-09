@@ -1,4 +1,4 @@
-import duckdb, { DuckDBConnection, DuckDBInstance } from '@duckdb/node-api';
+import duckdb, { DuckDBInstance } from '@duckdb/node-api';
 import fs from 'node:fs';
 import { renderString } from './template';
 import path from 'node:path';
