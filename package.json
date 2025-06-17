@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint && biome lint --write --unsafe",
+    "lint": "next lint && biome lint",
     "lint:fix": "next lint --fix && biome lint --write --unsafe",
     "format": "biome format --write",
     "db:generate": "drizzle-kit generate",
@@ -97,7 +97,7 @@
     "zod": "^3.25.55"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
+    "@biomejs/biome": "2.0.0",
     "@playwright/test": "^1.52.0",
     "@tailwindcss/typography": "^0.5.16",
     "@types/d3-scale": "^4.0.9",
