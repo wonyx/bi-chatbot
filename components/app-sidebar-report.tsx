@@ -16,7 +16,7 @@ import { ReportList } from '@/lib/types';
 const PAGE_SIZE = 20;
 
 export type AppSidebarReportProps = {};
-export function AppSidebarReport(props: AppSidebarReportProps) {
+export function AppSidebarReport(_props: AppSidebarReportProps) {
   const { setOpenMobile } = useSidebar();
   const { key } = useParams();
 
@@ -58,8 +58,8 @@ export function AppSidebarReport(props: AppSidebarReportProps) {
 }
 
 export function listReportsPaginationKey(
-  pageIndex: number,
-  previousPageData: ChatHistory,
+  _pageIndex: number,
+  _previousPageData: ChatHistory,
 ) {
   return `/api/reports?limit=${PAGE_SIZE}`;
 }

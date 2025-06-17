@@ -93,6 +93,7 @@ export const GitIcon = () => {
         />
       </g>
       <defs>
+        {/** biome-ignore lint/nursery/useUniqueElementIds: <explanation> */}
         <clipPath id="clip0_872_3147">
           <rect width="16" height="16" fill="white" />
         </clipPath>
@@ -351,6 +352,7 @@ export const LoaderIcon = ({ size = 16 }: { size?: number }) => {
         />
       </g>
       <defs>
+        {/** biome-ignore lint/nursery/useUniqueElementIds: <explanation> */}
         <clipPath id="clip0_2393_1490">
           <rect width="16" height="16" fill="white" />
         </clipPath>

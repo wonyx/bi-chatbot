@@ -24,6 +24,7 @@ export function AuthForm({
           Email Address
         </Label>
 
+        {/** biome-ignore lint/nursery/useUniqueElementIds: <explanation> */}
         <Input
           id="email"
           name="email"
@@ -45,6 +46,7 @@ export function AuthForm({
           Password
         </Label>
 
+        {/** biome-ignore lint/nursery/useUniqueElementIds: <explanation> */}
         <Input
           id="password"
           name="password"

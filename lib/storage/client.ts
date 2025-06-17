@@ -34,7 +34,7 @@ export function createContentStorage(env: any) {
     has: (key: string) => storage.has(key),
     getItemRaw: (key: string) => storage.getItemRaw(key),
     getContent: async (key: string, prefix?: string) => {
-      const ps = prefix ? prefixStorage(storage, prefix) : storage;
+      const _ps = prefix ? prefixStorage(storage, prefix) : storage;
       const item = await storage.getItemRaw(key);
       if (!item) {
         throw new Error(`not found: ${key}, prefix: ${prefix}`);

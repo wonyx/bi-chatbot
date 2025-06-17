@@ -2,7 +2,7 @@ import { auth } from '@/app/(auth)/auth';
 import { env } from '@/app/env';
 import { ChatSDKError } from '@/lib/errors';
 import { createContentStorage } from '@/lib/storage/client';
-import { ReportList, ReportListItem } from '@/lib/types';
+import { ReportList, } from '@/lib/types';
 import matter from 'gray-matter';
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

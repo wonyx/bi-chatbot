@@ -1,7 +1,6 @@
 import { env } from '@/app/env';
-import { user } from '@/lib/db/schema';
 import { createDBClient } from '@/lib/duckdb/client';
-import { customProvider, generateObject, tool } from 'ai';
+import { generateObject, tool } from 'ai';
 import { z } from 'zod';
 import { myProvider } from '@/lib/ai/providers';
 import { syntaxPrompt } from '../duckdb-prompt';
@@ -30,7 +29,7 @@ export const generateSQL = tool({
   },
 });
 
-async function validateSQL(query: string) {
+async function _validateSQL(query: string) {
   const cli = await createDBClient({
     initSqlDir: env.INIT_DB_DIR,
     initSqlFile: env.INIT_DB_SQL,

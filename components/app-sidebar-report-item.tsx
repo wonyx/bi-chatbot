@@ -1,5 +1,4 @@
 'use client';
-import { chat } from '@/lib/db/schema';
 import { NextLink } from '@/components/next-link';
 import React from 'react';
 import { SidebarMenuItem, SidebarMenuButton, useSidebar } from './ui/sidebar';
