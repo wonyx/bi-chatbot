@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint && biome lint",
     "lint:fix": "next lint --fix && biome lint --write --unsafe",
@@ -99,6 +100,7 @@
     "zod": "^3.25.55"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^15.3.2",
     "@biomejs/biome": "2.0.0",
     "@playwright/test": "^1.52.0",
     "@tailwindcss/typography": "^0.5.16",
