@@ -52,10 +52,9 @@ export async function createDBClient(args: createDBClientArgs) {
 }
 export type DBClient = Awaited<ReturnType<typeof createDBClient>>;
 
-async function toJson(res: duckdb.DuckDBMaterializedResult) {
+export async function toJson(res: duckdb.DuckDBMaterializedResult) {
   return {
     columns: await res.columnNamesAndTypesJson(),
     rows: await res.getRowObjectsJson(),
   };
 }
-export default {};
