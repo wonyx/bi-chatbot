@@ -70,6 +70,7 @@ export function ReportDocument(props: ReportDocumentProps) {
     }
     const ret: any = {};
     for (const [key, value] of Object.entries(res)) {
+      // @ts-ignore
       ret[key] = toDataset(value);
     }
     return ret;

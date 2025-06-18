@@ -40,8 +40,10 @@ export async function GET(
   const res: any = {};
   for (const [key, value] of Object.entries(frontmatter.sql)) {
     if (value) {
+      // @ts-ignore
       const sql = value.content as string;
       const result = await cli.query(sql);
+      // @ts-ignore
       res[key] = await toJson(result);
     }
   }
