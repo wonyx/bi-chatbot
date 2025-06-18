@@ -35,5 +35,5 @@ export default async function Page(props: PageProps) {
   //     dbClient={dbClient}
   //   />
   // );
-  return <ReportDocument id={params.key} source={source} />;
+  return <ReportDocument id={params.key} type="report" source={source} />;
 }

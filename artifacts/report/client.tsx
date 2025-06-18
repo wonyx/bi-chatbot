@@ -1,9 +1,11 @@
 import { Artifact } from '@/components/create-artifact';
+import { ReportDocument } from '@/components/report-document';
 // import { ExampleComponent } from '@/components/example-component';
 import { toast } from 'sonner';
 
 interface CustomArtifactMetadata {
   // Define metadata your custom artifact might need—the example below is minimal.
+  documentId: string;
   info: string;
 }
 
@@ -14,6 +16,7 @@ export const customArtifact = new Artifact<'report', CustomArtifactMetadata>({
   initialize: async ({ documentId, setMetadata }) => {
     // For example, initialize the artifact with default metadata.
     setMetadata({
+      documentId,
       info: `Document ${documentId} initialized.`,
     });
   },
@@ -36,20 +39,22 @@ export const customArtifact = new Artifact<'report', CustomArtifactMetadata>({
     }
   },
   // Defines how the artifact content is rendered
-  content: ({
-    mode,
-    status,
-    content,
-    isCurrentVersion,
-    currentVersionIndex,
-    onSaveContent,
-    getDocumentContentById,
-    isLoading,
-    metadata,
-  }) => {
+  content: (args) => {
+    const {
+      mode,
+      status,
+      content,
+      isCurrentVersion,
+      currentVersionIndex,
+      onSaveContent,
+      getDocumentContentById,
+      isLoading,
+      metadata,
+    } = args;
     if (isLoading) {
       return <div>Loading custom artifact...</div>;
     }
+    console.log('document metadata:', args);
 
     if (mode === 'diff') {
       const oldContent = getDocumentContentById(currentVersionIndex - 1);
@@ -62,26 +67,17 @@ export const customArtifact = new Artifact<'report', CustomArtifactMetadata>({
         </div>
       );
     }
+    if (!metadata?.documentId) {
+      return null;
+    }
 
     return (
       <div className="custom-artifact">
-        {/* <ExampleComponent
-          content={content}
-          metadata={metadata}
-          onSaveContent={onSaveContent}
-          isCurrentVersion={isCurrentVersion}
-        /> */}
-        {content}
-
-        {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
-        <button
-          onClick={() => {
-            navigator.clipboard.writeText(content);
-            toast.success('Content copied to clipboard!');
-          }}
-        >
-          Copy
-        </button>
+        <ReportDocument
+          id={metadata.documentId}
+          type="document"
+          source={content}
+        />
       </div>
     );
   },

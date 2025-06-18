@@ -11,11 +11,14 @@ import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 type ReactMDXContent = (props: MDXProps) => ReactNode;
 
 export type ReportDocumentProps = {
+  type: 'report' | 'document';
   id: string;
   source: string;
 };
 export function ReportDocument(props: ReportDocumentProps) {
-  const { id, source } = props;
+  const { id, type, source } = props;
+  console.log('ReportDocument', props);
+
   const [MdxContent, setMdxContent] = useState<ReactMDXContent>(
     () => () => null,
   );
@@ -28,10 +31,21 @@ export function ReportDocument(props: ReportDocumentProps) {
     data: res,
     isLoading,
     isError,
+    error,
   } = useQuery({
     queryKey: ['reports/query', id],
     queryFn: async () => {
-      const response = await fetch(`/api/reports/${id}/query`);
+      const url =
+        type === 'report'
+          ? new URL(`/api/reports/${id}/query`, window.location.origin)
+          : new URL(`/api/document/${id}/query`, window.location.origin);
+      // const params =
+      //   type === 'report' ? new URLSearchParams() : new URLSearchParams({ id });
+      // url.search = params.toString();
+      // console.log('Fetching query from:', url.toString());
+      const response = await fetch(url, {
+        method: 'GET',
+      });
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -39,7 +53,7 @@ export function ReportDocument(props: ReportDocumentProps) {
     },
   });
 
-  // console.log('Query Result:', query.data);
+  console.log('Query Result:', res);
 
   //   const query = frontmatter.query?.my_table?.content
   //     ? JSON.parse(frontmatter.query?.my_table?.content)
@@ -80,6 +94,7 @@ export function ReportDocument(props: ReportDocumentProps) {
   //   }
 
   if (isError) {
+    console.error('Error fetching report data:', error);
     return <div>error</div>;
   }
   if (isLoading) {
