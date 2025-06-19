@@ -18,6 +18,7 @@ import { Editor } from './text-editor';
 import { DocumentToolCall, DocumentToolResult } from './document';
 import { useArtifact } from '@/hooks/use-artifact';
 import equal from 'fast-deep-equal';
+import { ReportDocument } from './report-document';
 
 interface DocumentPreviewProps {
   isReadonly: boolean;
@@ -243,10 +244,19 @@ const DocumentContent = ({ document }: { document: Document }) => {
     suggestions: [],
   };
 
+  // console.log('document content:', document);
+
   return (
     <div className={containerClassName}>
       {document.kind === 'text' ? (
         <Editor {...commonProps} onSaveContent={() => {}} />
+      ) : document.kind === 'report' ? (
+        <ReportDocument
+          type={'document'}
+          id={document.id}
+          source={document.content ?? ''}
+          {...commonProps}
+        />
       ) : null}
     </div>
   );
