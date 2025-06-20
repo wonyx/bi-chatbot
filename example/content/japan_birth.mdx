@@ -12,13 +12,16 @@ sql:
                 birth_male / NULLIF(birth_total,0) as '男性比率',
             FROM japan_birth 
             ORDER BY year
+chart:
+    japan_birth:
+        x: 年
+        y: [男性, 女性]
+        stack: true
 ---
 
 ## 日本の出生数
 
 <BarChart
-    x='年'
-    y={['男性','女性']}
-    stack
+    {...frontmatter.chart.japan_birth}
     {...props.data.japan_birth}
 />

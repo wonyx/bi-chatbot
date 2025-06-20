@@ -1,4 +1,3 @@
-
 import { textDocumentHandler } from '@/artifacts/text/server';
 import { ArtifactKind } from '@/components/artifact';
 import { DataStreamWriter } from 'ai';
@@ -20,6 +19,8 @@ export interface CreateDocumentCallbackProps {
   title: string;
   dataStream: DataStreamWriter;
   session: Session;
+  message: string;
+  description: string;
 }
 
 export interface UpdateDocumentCallbackProps {
@@ -48,6 +49,8 @@ export function createDocumentHandler<T extends ArtifactKind>(config: {
         title: args.title,
         dataStream: args.dataStream,
         session: args.session,
+        message: args.message,
+        description: args.description,
       });
 
       if (args.session?.user?.id) {

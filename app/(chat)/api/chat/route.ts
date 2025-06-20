@@ -1,12 +1,11 @@
-import {
-  appendClientMessage,
-  appendResponseMessages,
-  createDataStream,
-  smoothStream,
-  streamText,
-} from 'ai';
 import { auth, type UserType } from '@/app/(auth)/auth';
-import { type RequestHints, systemPrompt } from '@/lib/ai/prompts';
+import { entitlementsByUserType } from '@/lib/ai/entitlements';
+import { systemPrompt, type RequestHints } from '@/lib/ai/prompts';
+import { myProvider } from '@/lib/ai/providers';
+import { createDocument } from '@/lib/ai/tools/create-document';
+import { requestSuggestions } from '@/lib/ai/tools/request-suggestions';
+import { updateDocument } from '@/lib/ai/tools/update-document';
+import { isProductionEnvironment } from '@/lib/constants';
 import {
   createStreamId,
   deleteChatById,
@@ -18,25 +17,26 @@ import {
   saveMessages,
 } from '@/lib/db/queries';
 import { generateUUID, getTrailingMessageId } from '@/lib/utils';
+import {
+  appendClientMessage,
+  appendResponseMessages,
+  createDataStream,
+  smoothStream,
+  streamText,
+} from 'ai';
 import { generateTitleFromUserMessage } from '../../actions';
-import { createDocument } from '@/lib/ai/tools/create-document';
-import { updateDocument } from '@/lib/ai/tools/update-document';
-import { requestSuggestions } from '@/lib/ai/tools/request-suggestions';
-import { isProductionEnvironment } from '@/lib/constants';
-import { myProvider } from '@/lib/ai/providers';
-import { entitlementsByUserType } from '@/lib/ai/entitlements';
 import { postRequestBodySchema, type PostRequestBody } from './schema';
 // import { geolocation } from '@vercel/functions';
+import { generateQueryTool } from '@/lib/ai/tools/generate-sql';
+import { listTables } from '@/lib/ai/tools/list-tables';
+import type { Chat } from '@/lib/db/schema';
+import { ChatSDKError } from '@/lib/errors';
+import { differenceInSeconds } from 'date-fns';
+import { after } from 'next/server';
 import {
   createResumableStreamContext,
   type ResumableStreamContext,
 } from 'resumable-stream';
-import { after } from 'next/server';
-import type { Chat } from '@/lib/db/schema';
-import { differenceInSeconds } from 'date-fns';
-import { ChatSDKError } from '@/lib/errors';
-import { listTables } from '@/lib/ai/tools/list-tables';
-import { generateSQL } from '@/lib/ai/tools/generate-sql';
 
 export const maxDuration = 60;
 
@@ -166,14 +166,18 @@ export async function POST(request: Request) {
           experimental_transform: smoothStream({ chunking: 'word' }),
           experimental_generateMessageId: generateUUID,
           tools: {
-            createDocument: createDocument({ session, dataStream }),
+            createDocument: createDocument({
+              session,
+              message: message.content,
+              dataStream,
+            }),
             updateDocument: updateDocument({ session, dataStream }),
             requestSuggestions: requestSuggestions({
               session,
               dataStream,
             }),
             listTables,
-            generateSQL,
+            generateSQL: generateQueryTool,
           },
           onFinish: async ({ response }) => {
             if (session.user?.id) {

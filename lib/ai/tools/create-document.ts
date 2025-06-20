@@ -10,17 +10,23 @@ import {
 interface CreateDocumentProps {
   session: Session;
   dataStream: DataStreamWriter;
+  message: string;
 }
 
-export const createDocument = ({ session, dataStream }: CreateDocumentProps) =>
+export const createDocument = ({
+  session,
+  message,
+  dataStream,
+}: CreateDocumentProps) =>
   tool({
     description:
       'Create a document for a writing or content creation activities. This tool will call other functions that will generate the contents of the document based on the title and kind.',
     parameters: z.object({
       title: z.string(),
       kind: z.enum(artifactKinds),
+      description: z.string().describe('A description of user intent'),
     }),
-    execute: async ({ title, kind }) => {
+    execute: async ({ title, description, kind }) => {
       const id = generateUUID();
 
       dataStream.writeData({
@@ -55,8 +61,10 @@ export const createDocument = ({ session, dataStream }: CreateDocumentProps) =>
       await documentHandler.onCreateDocument({
         id,
         title,
+        message,
         dataStream,
         session,
+        description,
       });
 
       dataStream.writeData({ type: 'finish', content: '' });
