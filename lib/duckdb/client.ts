@@ -21,7 +21,7 @@ export async function createDBClient(args: createDBClientArgs) {
     // console.log('running init sql', initSql, templated);
 
     const conn = await instance.connect();
-    const initRes = await conn.run(templated);
+    const _initRes = await conn.run(templated);
     // console.log('init res', await toJson(initRes));
   }
   // console.log('after init sql');

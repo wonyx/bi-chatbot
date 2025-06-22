@@ -347,7 +347,7 @@ function PureAttachmentsButton({
   );
 }
 
-const AttachmentsButton = memo(PureAttachmentsButton);
+const _AttachmentsButton = memo(PureAttachmentsButton);
 
 function PureStopButton({
   stop,

@@ -22,7 +22,7 @@ export function ReportDocument(props: ReportDocumentProps) {
   const [MdxContent, setMdxContent] = useState<ReactMDXContent>(
     () => () => null,
   );
-  const [frontmatter, setFrontmatter] = useState<Record<string, any>>({
+  const [_frontmatter, setFrontmatter] = useState<Record<string, any>>({
     title: 'Default Title',
     description: 'Default Description',
   });

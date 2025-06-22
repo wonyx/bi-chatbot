@@ -12,7 +12,7 @@ export type PageProps = {
 };
 
 export default async function Page(props: PageProps) {
-  const [params, searchParams] = await Promise.all([
+  const [params, _searchParams] = await Promise.all([
     props.params,
     props.searchParams,
   ]);

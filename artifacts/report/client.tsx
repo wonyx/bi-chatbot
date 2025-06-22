@@ -1,7 +1,5 @@
 import { Artifact } from '@/components/create-artifact';
 import { ReportDocument } from '@/components/report-document';
-// import { ExampleComponent } from '@/components/example-component';
-import { toast } from 'sonner';
 
 interface CustomArtifactMetadata {
   // Define metadata your custom artifact might need—the example below is minimal.

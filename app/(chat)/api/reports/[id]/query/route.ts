@@ -1,13 +1,12 @@
-import { auth } from '@/app/(auth)/auth';
+
 import { env } from '@/app/env';
 import { toJson, createDBClient } from '@/lib/duckdb/client';
 import { ChatSDKError } from '@/lib/errors';
 import { createContentStorage } from '@/lib/storage/client';
-import { ReportList } from '@/lib/types';
 import matter from 'gray-matter';
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;

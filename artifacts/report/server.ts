@@ -1,12 +1,11 @@
 import { env } from '@/app/env';
-import { reportPrompt, updateDocumentPrompt } from '@/lib/ai/prompts';
+import { reportPrompt } from '@/lib/ai/prompts';
 import { myProvider } from '@/lib/ai/providers';
 import { generateQuery } from '@/lib/ai/tools/generate-sql';
-import { listTables } from '@/lib/ai/tools/list-tables';
 import { createDocumentHandler } from '@/lib/artifacts/server';
 import { createDBClient } from '@/lib/duckdb/client';
 import { sharedChartPropsSchema } from '@/lib/zod-schema';
-import { generateObject, smoothStream, streamText } from 'ai';
+import { generateObject } from 'ai';
 import matter, { stringify } from 'gray-matter';
 
 export const customDocumentHandler = createDocumentHandler<'report'>({
@@ -46,7 +45,7 @@ export const customDocumentHandler = createDocumentHandler<'report'>({
       console.error('Error creating document:', error);
       dataStream.writeData({
         type: 'text-delta',
-        content: `Error creating document: ${error.message}`,
+        content: `Error creating document: ${error}`,
       });
       throw error;
     }
@@ -72,8 +71,8 @@ export const customDocumentHandler = createDocumentHandler<'report'>({
       userInput: description,
       schema: JSON.stringify(schema),
       current: {
-        sql: report.data.sql['report1'].content,
-        chartType: report.data.chart['report1'].type,
+        sql: report.data.sql.report1.content,
+        chartType: report.data.chart.report1.type,
       },
     });
     console.log('generateQuery res:', object);
