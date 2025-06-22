@@ -18,6 +18,12 @@ import { MessageEditor } from './message-editor';
 import { DocumentPreview } from './document-preview';
 import { MessageReasoning } from './message-reasoning';
 import type { UseChatHelpers } from '@ai-sdk/react';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from './ui/collapsible';
+import { ChevronsDownUp } from 'lucide-react';
 
 const PurePreviewMessage = ({
   chatId,
@@ -203,7 +209,19 @@ const PurePreviewMessage = ({
                           isReadonly={isReadonly}
                         />
                       ) : (
-                        <pre>{JSON.stringify(result, null, 2)}</pre>
+                        <Collapsible>
+                          <CollapsibleTrigger className="w-full">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-muted-foreground">
+                                Tool Result
+                              </span>
+                              <ChevronsDownUp size={14} />
+                            </div>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="mt-2">
+                            <pre>{JSON.stringify(result, null, 2)}</pre>
+                          </CollapsibleContent>
+                        </Collapsible>
                       )}
                     </div>
                   );
