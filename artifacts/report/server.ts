@@ -5,83 +5,163 @@ import { generateQuery } from '@/lib/ai/tools/generate-sql';
 import { listTables } from '@/lib/ai/tools/list-tables';
 import { createDocumentHandler } from '@/lib/artifacts/server';
 import { createDBClient } from '@/lib/duckdb/client';
-import { smoothStream, streamText } from 'ai';
+import { sharedChartPropsSchema } from '@/lib/zod-schema';
+import { generateObject, smoothStream, streamText } from 'ai';
+import matter, { stringify } from 'gray-matter';
 
 export const customDocumentHandler = createDocumentHandler<'report'>({
   kind: 'report',
   // Called when the document is first created.
-  onCreateDocument: async ({ title, message, description, dataStream }) => {
+  onCreateDocument: async ({ title, message, dataStream }) => {
+    try {
+      let draftContent = '';
+
+      const cli = await createDBClient({
+        initSqlDir: env.INIT_DB_DIR,
+        initSqlFile: env.INIT_DB_SQL,
+      });
+      console.log('Creating report', title, message);
+      const schema = await cli.getSchema();
+      // For demonstration, use streamText to generate content.
+      const { object } = await generateQuery({
+        userInput: message,
+        schema: JSON.stringify(schema),
+      });
+      console.log('generateQuery res:', object);
+
+      draftContent = createReportMdx({
+        title,
+        id: 'report1',
+        query: object.sql,
+        chartType: object.chartType,
+        chartProps: object.chartProps,
+      });
+
+      dataStream.writeData({
+        type: 'text-delta',
+        content: draftContent,
+      });
+      return draftContent;
+    } catch (error) {
+      console.error('Error creating document:', error);
+      dataStream.writeData({
+        type: 'text-delta',
+        content: `Error creating document: ${error.message}`,
+      });
+      throw error;
+    }
+  },
+  // Called when updating the document based on user modifications.
+  onUpdateDocument: async ({ document, description, dataStream }) => {
     let draftContent = '';
+
+    if (!document.content) {
+      throw new Error('Document content is empty');
+    }
+    const report = matter(document.content);
 
     const cli = await createDBClient({
       initSqlDir: env.INIT_DB_DIR,
       initSqlFile: env.INIT_DB_SQL,
     });
-    console.log('Creating report', title, message, description);
+    console.log('Updating report', document.title, description);
     const schema = await cli.getSchema();
-    // For demonstration, use streamText to generate content.
+    // For demonstration, use smoothStream to generate content.
+
     const { object } = await generateQuery({
-      userInput: message,
+      userInput: description,
       schema: JSON.stringify(schema),
-    });
-
-    // Stream the content back to the client.
-    // for await (const delta of fullStream) {
-    //   console.log('Delta received:', delta);
-    //   if (delta.type === 'text-delta') {
-    //     draftContent += delta.textDelta;
-    //     dataStream.writeData({
-    //       type: 'content-update',
-    //       content: delta.textDelta,
-    //     });
-    //   }
-    // }
-
-    return JSON.stringify({
-      title,
-      query: object.sql,
-      description,
-    });
-  },
-  // Called when updating the document based on user modifications.
-  onUpdateDocument: async ({ document, description, dataStream }) => {
-    let draftContent = '';
-    const { fullStream } = streamText({
-      model: myProvider.languageModel('artifact-model'),
-      system: updateDocumentPrompt(document.content, 'report'),
-      experimental_transform: smoothStream({ chunking: 'word' }),
-      prompt: description,
-      experimental_providerMetadata: {
-        openai: {
-          prediction: {
-            type: 'content',
-            content: document.content,
-          },
-        },
+      current: {
+        sql: report.data.sql['report1'].content,
+        chartType: report.data.chart['report1'].type,
       },
     });
+    console.log('generateQuery res:', object);
+    const { object: chartProps } = await generateChartProps({
+      chartType: object.chartType,
+    });
 
-    for await (const delta of fullStream) {
-      if (delta.type === 'text-delta') {
-        draftContent += delta.textDelta;
-        dataStream.writeData({
-          type: 'content-update',
-          content: delta.textDelta,
-        });
-      }
-    }
+    draftContent = createReportMdx({
+      title: report.data.title,
+      id: 'report1',
+      query: object.sql,
+      chartType: object.chartType,
+      chartProps,
+    });
 
     return draftContent;
   },
 });
 
-function createReport(args: {
+async function generateChartProps({
+  chartType,
+}: {
+  chartType: 'bar' | 'line' | 'area' | 'pie';
+}) {
+  switch (chartType) {
+    case 'bar':
+    case 'line':
+    case 'area':
+      return generateObject({
+        model: myProvider.languageModel('artifact-model'),
+        system: reportPrompt,
+        prompt: `Generate chart properties for a ${chartType} chart.`,
+        schema: sharedChartPropsSchema,
+      });
+    case 'pie':
+    default:
+      throw new Error(`Unsupported chart type: ${chartType}`);
+  }
+}
+function createReportMdx(args: {
   title: string;
-  description?: string;
   id: string;
   query: string;
-  chart: {
-    type: 'bar' | 'line' | 'pie';
-    data: Array<{ label: string; value: number }>;
-  };
-});
+  chartType?: 'bar' | 'line' | 'area' | 'pie';
+  chartProps: Record<string, any>;
+}) {
+  const { title, id, query, chartType } = args;
+  let content = '';
+  switch (chartType) {
+    case 'bar':
+      content = `
+<BarChart
+  {...frontmatter.chart.${id}}
+  {...props.data.${id}}
+/>
+`;
+      break;
+    case 'line':
+      content = `
+<LineChart
+  {...frontmatter.chart.${id}}
+  {...props.data.${id}}
+/>
+`;
+      break;
+    case 'pie':
+      content = `
+<PieChart
+  {...frontmatter.chart.${id}}
+  {...props.data.${id}}
+/>`;
+      break;
+    default:
+      throw new Error(`Unsupported chart type: ${chartType}`);
+  }
+
+  return stringify(content, {
+    title,
+    sql: {
+      [id]: {
+        content: query,
+      },
+    },
+    chart: {
+      [id]: {
+        ...args.chartProps,
+        type: chartType,
+      },
+    },
+  });
+}

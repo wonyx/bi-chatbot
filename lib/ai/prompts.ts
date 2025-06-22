@@ -22,10 +22,7 @@ This is a guide for using artifacts tools: \`createDocument\` and \`updateDocume
 - Use targeted updates only for specific, isolated changes
 - Follow user instructions for which parts to modify
 
-**When NOT to use \`updateDocument\`:**
-- Immediately after creating a document
 
-Do not update document right after creating it. Wait for user feedback or request to update it.
 `;
 
 export const regularPrompt =

@@ -1,6 +1,6 @@
 import { auth } from '@/app/(auth)/auth';
 import { env } from '@/app/env';
-import { getDocumentsById } from '@/lib/db/queries';
+import { getDocumentById, getDocumentsById } from '@/lib/db/queries';
 import { toJson, createDBClient } from '@/lib/duckdb/client';
 import { ChatSDKError } from '@/lib/errors';
 import { createContentStorage } from '@/lib/storage/client';
@@ -30,9 +30,8 @@ export async function GET(
     initSqlFile: env.INIT_DB_SQL,
   });
 
-  const documents = await getDocumentsById({ id });
+  const document = await getDocumentById({ id });
 
-  const [document] = documents;
   const content = document?.content as string;
   console.log('content', content);
 
