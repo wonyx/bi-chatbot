@@ -1,4 +1,4 @@
+import Mustache from 'mustache';
 export async function renderString(str: string, _context: object) {
-  // TODO: use knex-raw
-  return str;
+  return Mustache.render(str, _context);
 }
