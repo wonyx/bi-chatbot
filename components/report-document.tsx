@@ -17,7 +17,7 @@ export type ReportDocumentProps = {
 };
 export function ReportDocument(props: ReportDocumentProps) {
   const { id, type, source } = props;
-  console.log('ReportDocument', props);
+  // console.log('ReportDocument', props);
 
   const [MdxContent, setMdxContent] = useState<ReactMDXContent>(
     () => () => null,
@@ -53,7 +53,7 @@ export function ReportDocument(props: ReportDocumentProps) {
     },
   });
 
-  console.log('Query Result:', res);
+  // console.log('Query Result:', res);
 
   //   const query = frontmatter.query?.my_table?.content
   //     ? JSON.parse(frontmatter.query?.my_table?.content)
@@ -72,7 +72,7 @@ export function ReportDocument(props: ReportDocumentProps) {
       remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
     }).then((r) => {
       setMdxContent(() => r.default);
-      console.log('MDX Content:', r);
+      // console.log('MDX Content:', r);
       if (r.frontmatter) {
         setFrontmatter(r.frontmatter);
       }
@@ -109,7 +109,7 @@ export function ReportDocument(props: ReportDocumentProps) {
     return null;
   }
 
-  console.log('data:', data);
+  // console.log('data:', data);
 
   return (
     <div className="prose prose-gray dark:prose-invert">

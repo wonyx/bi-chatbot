@@ -16,7 +16,7 @@ export default async function Page(props: PageProps) {
     props.params,
     props.searchParams,
   ]);
-  console.log('params', params);
+  // console.log('params', params);
   const storage = await createContentStorage(env);
   const source = await storage.getContent(decodeURIComponent(params.key));
   return <ReportDocument id={params.key} type="report" source={source} />;

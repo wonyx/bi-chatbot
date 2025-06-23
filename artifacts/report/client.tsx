@@ -52,7 +52,7 @@ export const customArtifact = new Artifact<'report', CustomArtifactMetadata>({
     if (isLoading) {
       return <div>Loading custom artifact...</div>;
     }
-    console.log('document metadata:', args);
+    // console.log('document metadata:', args);
 
     if (mode === 'diff') {
       const oldContent = getDocumentContentById(currentVersionIndex - 1);
@@ -86,6 +86,7 @@ export const customArtifact = new Artifact<'report', CustomArtifactMetadata>({
       description: 'Refresh artifact info',
       // @ts-ignore
       onClick: ({ appendMessage }) => {
+        console.log('Refreshing custom artifact info...', appendMessage);
         appendMessage({
           role: 'user',
           content: 'Please refresh the info for my custom artifact.',
@@ -95,15 +96,15 @@ export const customArtifact = new Artifact<'report', CustomArtifactMetadata>({
   ],
   // Additional toolbar actions for more control
   toolbar: [
-    {
-      icon: <span>✎</span>,
-      description: 'Edit custom artifact',
-      onClick: ({ appendMessage }) => {
-        appendMessage({
-          role: 'user',
-          content: 'Edit the custom artifact content.',
-        });
-      },
-    },
+    // {
+    //   icon: <span>✎</span>,
+    //   description: 'Edit custom artifact',
+    //   onClick: ({ appendMessage }) => {
+    //     appendMessage({
+    //       role: 'user',
+    //       content: 'Edit the custom artifact content.',
+    //     });
+    //   },
+    // },
   ],
 });
