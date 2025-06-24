@@ -241,6 +241,7 @@ export async function POST(request: Request) {
       return new Response(stream);
     }
   } catch (error) {
+    console.error('Error in chat API:', error);
     if (error instanceof ChatSDKError) {
       return error.toResponse();
     }

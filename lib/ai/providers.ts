@@ -3,7 +3,8 @@ import {
   extractReasoningMiddleware,
   wrapLanguageModel,
 } from 'ai';
-import { google } from '@ai-sdk/google';
+// import { google } from '@ai-sdk/google';
+import { vertex } from '@ai-sdk/google-vertex';
 import { isTestEnvironment } from '../constants';
 import {
   artifactModel,
@@ -23,17 +24,17 @@ export const myProvider = isTestEnvironment
     })
   : customProvider({
       languageModels: {
-        'chat-model': google('gemini-2.5-flash-preview-05-20'),
+        'chat-model': vertex('gemini-2.5-flash'),
         'chat-model-reasoning': wrapLanguageModel({
-          model: google('gemini-2.5-flash-preview-05-20'),
+          model: vertex('gemini-2.5-flash'),
           middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
-        'title-model': google('gemini-2.0-flash-lite'),
-        'sql-model': google('gemini-2.5-flash-preview-05-20'),
-        'artifact-model': google('gemini-2.5-flash-preview-05-20'),
+        'title-model': vertex('gemini-2.5-flash'),
+        'sql-model': vertex('gemini-2.5-flash'),
+        'artifact-model': vertex('gemini-2.5-flash'),
       },
       imageModels: {
         // @ts-ignore
-        'small-model': google('gemini-2.5-flash-preview-05-20'),
+        'small-model': vertex('imagen-3.0-generate-002'),
       },
     });
