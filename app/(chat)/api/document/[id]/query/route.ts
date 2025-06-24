@@ -1,7 +1,8 @@
-
+import { auth } from '@/app/(auth)/auth';
 import { env } from '@/app/env';
-import { getDocumentById, } from '@/lib/db/queries';
+import { getDocumentById } from '@/lib/db/queries';
 import { toJson, createDBClient } from '@/lib/duckdb/client';
+import { ChatSDKError } from '@/lib/errors';
 import matter from 'gray-matter';
 
 export async function GET(
@@ -10,18 +11,18 @@ export async function GET(
 ) {
   const { id } = await params;
 
-  // if (!id) {
-  //   return new ChatSDKError(
-  //     'bad_request:api',
-  //     'Parameter id is missing',
-  //   ).toResponse();
-  // }
+  if (!id) {
+    return new ChatSDKError(
+      'bad_request:api',
+      'Parameter id is missing',
+    ).toResponse();
+  }
 
-  // const session = await auth();
+  const session = await auth();
 
-  // if (!session?.user) {
-  //   return new ChatSDKError('unauthorized:report').toResponse();
-  // }
+  if (!session?.user) {
+    return new ChatSDKError('unauthorized:report').toResponse();
+  }
   const cli = await createDBClient({
     initSqlDir: env.INIT_DB_DIR,
     initSqlFile: env.INIT_DB_SQL,
@@ -30,11 +31,11 @@ export async function GET(
   const document = await getDocumentById({ id });
 
   const content = document?.content as string;
-  console.log('content', content);
+  // console.log('content', content);
 
-  // if (!content) {
-  //   return new ChatSDKError('not_found:report').toResponse();
-  // }
+  if (!content) {
+    return new ChatSDKError('not_found:report').toResponse();
+  }
   const { data: frontmatter } = matter(content.toString());
 
   const res: any = {};

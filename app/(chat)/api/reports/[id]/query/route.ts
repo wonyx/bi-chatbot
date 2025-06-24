@@ -1,4 +1,4 @@
-
+import { auth } from '@/app/(auth)/auth';
 import { env } from '@/app/env';
 import { toJson, createDBClient } from '@/lib/duckdb/client';
 import { ChatSDKError } from '@/lib/errors';
@@ -11,18 +11,18 @@ export async function GET(
 ) {
   const { id } = await params;
 
-  // if (!id) {
-  //   return new ChatSDKError(
-  //     'bad_request:api',
-  //     'Parameter id is missing',
-  //   ).toResponse();
-  // }
+  if (!id) {
+    return new ChatSDKError(
+      'bad_request:api',
+      'Parameter id is missing',
+    ).toResponse();
+  }
 
-  // const session = await auth();
+  const session = await auth();
 
-  // if (!session?.user) {
-  //   return new ChatSDKError('unauthorized:report').toResponse();
-  // }
+  if (!session?.user) {
+    return new ChatSDKError('unauthorized:report').toResponse();
+  }
 
   const storage = await createContentStorage(env);
   const cli = await createDBClient({
