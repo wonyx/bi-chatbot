@@ -13,8 +13,18 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN corepack enable pnpm && pnpm run build
 
+# debug server
+FROM gcr.io/distroless/nodejs22-debian12:debug AS debug
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/example ./example
+
+CMD ["server.js"]
+
 # Stage 3: Production server
-FROM gcr.io/distroless/nodejs22-debian12:debug AS runner
+FROM gcr.io/distroless/nodejs22-debian12:nonroot
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app/.next/standalone ./
