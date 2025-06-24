@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from 'react';
 import runtime from 'react/jsx-runtime';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
+import { InlineDocumentSkeleton } from './document-skeleton';
 type ReactMDXContent = (props: MDXProps) => ReactNode;
 
 export type ReportDocumentProps = {
@@ -17,7 +18,6 @@ export type ReportDocumentProps = {
 };
 export function ReportDocument(props: ReportDocumentProps) {
   const { id, type, source } = props;
-  // console.log('ReportDocument', props);
 
   const [MdxContent, setMdxContent] = useState<ReactMDXContent>(
     () => () => null,
@@ -39,10 +39,6 @@ export function ReportDocument(props: ReportDocumentProps) {
         type === 'report'
           ? new URL(`/api/reports/${id}/query`, window.location.origin)
           : new URL(`/api/document/${id}/query`, window.location.origin);
-      // const params =
-      //   type === 'report' ? new URLSearchParams() : new URLSearchParams({ id });
-      // url.search = params.toString();
-      // console.log('Fetching query from:', url.toString());
       const response = await fetch(url, {
         method: 'GET',
       });
@@ -52,18 +48,6 @@ export function ReportDocument(props: ReportDocumentProps) {
       return response.json();
     },
   });
-
-  // console.log('Query Result:', res);
-
-  //   const query = frontmatter.query?.my_table?.content
-  //     ? JSON.parse(frontmatter.query?.my_table?.content)
-  //     : null;
-  //   //   const { resultSet, isLoading, error, progress } = useCubeQuery(query, {
-  //   //     skip: !query,
-  //   //   });
-
-  //   const dataSource = resultSet?.tablePivot();
-  //   const columns = resultSet?.tableColumns();
 
   useEffect(() => {
     evaluate(source, {
@@ -89,27 +73,21 @@ export function ReportDocument(props: ReportDocumentProps) {
     }
     return ret;
   }, [res]);
-  //   if (isLoading) {
-  //     return <div>{progress?.stage || 'Loading...'}</div>;
-  //   }
 
   if (isError) {
     console.error('Error fetching report data:', error);
     return <div>error</div>;
   }
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (isLoading || !MdxContent) {
+    return (
+      <div className="flex justify-center items-center size-full">
+        <InlineDocumentSkeleton />
+      </div>
+    );
   }
-
-  if (!MdxContent) {
-    return <div>Loading MDX content...</div>;
-  }
-
   if (!data) {
     return null;
   }
-
-  // console.log('data:', data);
 
   return frontmatter.layout === 'landscape' ? (
     <LandscapeLayout>
