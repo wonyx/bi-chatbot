@@ -75,15 +75,9 @@ export const updateDocumentPrompt = (
   currentContent: string | null,
   type: ArtifactKind,
 ) =>
-  type === 'text'
+  type === 'report'
     ? `\
-Improve the following contents of the document based on the given prompt.
-
-${currentContent}
-`
-    : type === 'report'
-      ? `\
 Improve the following report based on the given prompt.
 ${currentContent}
 `
-      : '';
+    : '';
