@@ -3,7 +3,7 @@ import * as mdxComponents from '@/components/mdx-components';
 import { evaluate } from '@mdx-js/mdx';
 import { useQuery } from '@tanstack/react-query';
 import type { MDXProps } from 'mdx/types';
-import type { ReactNode } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import runtime from 'react/jsx-runtime';
 import remarkFrontmatter from 'remark-frontmatter';
@@ -22,7 +22,7 @@ export function ReportDocument(props: ReportDocumentProps) {
   const [MdxContent, setMdxContent] = useState<ReactMDXContent>(
     () => () => null,
   );
-  const [_frontmatter, setFrontmatter] = useState<Record<string, any>>({
+  const [frontmatter, setFrontmatter] = useState<Record<string, any>>({
     title: 'Default Title',
     description: 'Default Description',
   });
@@ -111,10 +111,18 @@ export function ReportDocument(props: ReportDocumentProps) {
 
   // console.log('data:', data);
 
-  return (
-    <div className="prose prose-gray dark:prose-invert">
-      <MdxContent components={mdxComponents} data={data} />
-    </div>
+  return frontmatter.layout === 'landscape' ? (
+    <LandscapeLayout>
+      <div className="prose prose-gray dark:prose-invert">
+        <MdxContent components={mdxComponents} data={data} />
+      </div>
+    </LandscapeLayout>
+  ) : (
+    <PortraitLayout>
+      <div className="prose prose-gray dark:prose-invert">
+        <MdxContent components={mdxComponents} data={data} />
+      </div>
+    </PortraitLayout>
   );
 }
 
@@ -132,4 +140,27 @@ function toDataset(res: Record<string, any>): {
       source: rows,
     },
   };
+}
+
+function PortraitLayout({ children }: PropsWithChildren) {
+  return (
+    <div className="mx-auto p-2.5 w-full min-w-0 max-w-2xl ">
+      <article className="prose prose-gray dark:prose-invert">
+        {children}
+      </article>
+    </div>
+  );
+}
+
+function LandscapeLayout({ children }: PropsWithChildren) {
+  return (
+    <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+      <article
+        className="prose prose-gray dark:prose-invert"
+        style={{ maxWidth: 'none' }}
+      >
+        {children}
+      </article>
+    </div>
+  );
 }
