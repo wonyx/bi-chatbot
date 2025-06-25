@@ -65,5 +65,5 @@ export function SharedChart(props: SharedChartProps) {
       ...props.customOption,
     };
   }, [props, legend]);
-  return <ReactECharts option={option} />;
+  return <ReactECharts className="w-full" option={option} />;
 }

@@ -1,5 +1,4 @@
-
-import { textDocumentHandler } from '@/artifacts/text/server';
+// import { textDocumentHandler } from '@/artifacts/text/server';
 import { ArtifactKind } from '@/components/artifact';
 import { DataStreamWriter } from 'ai';
 import { Document } from '../db/schema';
@@ -20,6 +19,8 @@ export interface CreateDocumentCallbackProps {
   title: string;
   dataStream: DataStreamWriter;
   session: Session;
+  message: string;
+  description: string;
 }
 
 export interface UpdateDocumentCallbackProps {
@@ -48,6 +49,8 @@ export function createDocumentHandler<T extends ArtifactKind>(config: {
         title: args.title,
         dataStream: args.dataStream,
         session: args.session,
+        message: args.message,
+        description: args.description,
       });
 
       if (args.session?.user?.id) {
@@ -89,7 +92,7 @@ export function createDocumentHandler<T extends ArtifactKind>(config: {
  * Use this array to define the document handlers for each artifact kind.
  */
 export const documentHandlersByArtifactKind: Array<DocumentHandler> = [
-  textDocumentHandler,
+  // textDocumentHandler,
   // codeDocumentHandler,
   // imageDocumentHandler,
   // sheetDocumentHandler,
@@ -97,7 +100,7 @@ export const documentHandlersByArtifactKind: Array<DocumentHandler> = [
 ];
 
 export const artifactKinds = [
-  'text',
+  // 'text',
   // 'code',
   // 'image',
   // 'sheet',

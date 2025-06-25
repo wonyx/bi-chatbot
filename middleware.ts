@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { guestRegex, isDevelopmentEnvironment } from './lib/constants';
+import { env } from './app/env';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -24,17 +25,17 @@ export async function middleware(request: NextRequest) {
   });
 
   if (!token) {
-    const redirectUrl = encodeURIComponent(request.url);
+    const redirectUrl = encodeURIComponent(env.BASE_URL + pathname);
 
     return NextResponse.redirect(
-      new URL(`/api/auth/guest?redirectUrl=${redirectUrl}`, request.url),
+      new URL(`/api/auth/guest?redirectUrl=${redirectUrl}`, env.BASE_URL),
     );
   }
 
   const isGuest = guestRegex.test(token?.email ?? '');
 
   if (token && !isGuest && ['/login', '/register'].includes(pathname)) {
-    return NextResponse.redirect(new URL('/', request.url));
+    return NextResponse.redirect(new URL('/', env.BASE_URL));
   }
 
   return NextResponse.next();
@@ -44,7 +45,7 @@ export const config = {
   matcher: [
     '/',
     '/chat/:id',
-    '/api/:path*',
+    // '/api/:path*',
     '/login',
     '/register',
     '/reports',
@@ -55,6 +56,6 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico, sitemap.xml, robots.txt (metadata files)
      */
-    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
   ],
 };

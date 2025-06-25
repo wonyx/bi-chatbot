@@ -20,6 +20,11 @@ This project is built on top of [Chat SDK](https://github.com/vercel/ai-chatbot)
 
 ## Prerequisites
 - [mise](https://mise.jdx.dev/)
+
+    ```bash
+    mise install
+    ```
+
 - docker
 
 ## Development
@@ -29,14 +34,15 @@ Create a `.env.local` file in the root directory of the project.
 cp .env.example .env.local
 ```
 
-`GOOGLE_GENERATIVE_AI_API_KEY`は、[Gemini API キーを取得](https://ai.google.dev/gemini-api/docs/api-key?hl=ja)して、設定してください。
+Google Cloudのデフォルト認証を設定するために、以下のコマンドを実行してください。
+```bash
+gcloud auth application-default login
+```
+
+`GOOGLE_VERTEX_PROJECT`は、Google CloudのProjectIDを指定してください。
 そのほかの、環境変数はexampleのままで動作するはずです。
 
 ### Setup
-- install tools
-```bash
-mise install
-```
 
 - compose
 ```bash
@@ -64,5 +70,9 @@ pnpm dev
 
 ```bash
 ARTIFACT_REGISTRY=asia-northeast1-docker.pkg.dev/<your-project>/<repo-name>/bi-chatbot:latest
-docker build -t bi-chatbot .
+docker build -t $ARTIFACT_REGISTRY .
+```
+### Push to Artifact Registry
+```bash
+docker push $ARTIFACT_REGISTRY
 ```

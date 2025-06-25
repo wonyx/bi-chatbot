@@ -9,18 +9,15 @@ import {
   useRef,
 } from 'react';
 import { ArtifactKind, UIArtifact } from './artifact';
-import { FileIcon, FullscreenIcon, ImageIcon, LoaderIcon } from './icons';
+import { FileIcon, FullscreenIcon, LoaderIcon } from './icons';
 import { cn, fetcher } from '@/lib/utils';
 import { Document } from '@/lib/db/schema';
 import { InlineDocumentSkeleton } from './document-skeleton';
 import useSWR from 'swr';
-import { Editor } from './text-editor';
 import { DocumentToolCall, DocumentToolResult } from './document';
-import { CodeEditor } from './code-editor';
 import { useArtifact } from '@/hooks/use-artifact';
 import equal from 'fast-deep-equal';
-import { SpreadsheetEditor } from './sheet-editor';
-import { ImageEditor } from './image-editor';
+import { ReportDocument } from './report-document';
 
 interface DocumentPreviewProps {
   isReadonly: boolean;
@@ -231,10 +228,7 @@ const DocumentContent = ({ document }: { document: Document }) => {
   const { artifact } = useArtifact();
 
   const containerClassName = cn(
-    'h-[257px] overflow-y-scroll border rounded-b-2xl dark:bg-muted border-t-0 dark:border-zinc-700',
-    {
-      'p-4 sm:px-14 sm:py-16': document.kind === 'text',
-    },
+    'h-[300px] overflow-y-scroll border rounded-b-2xl dark:bg-muted border-t-0 dark:border-zinc-700',
   );
 
   const commonProps = {
@@ -246,10 +240,17 @@ const DocumentContent = ({ document }: { document: Document }) => {
     suggestions: [],
   };
 
+  // console.log('document content:', document);
+
   return (
     <div className={containerClassName}>
-      {document.kind === 'text' ? (
-        <Editor {...commonProps} onSaveContent={() => {}} />
+      {document.kind === 'report' ? (
+        <ReportDocument
+          type={'document'}
+          id={document.id}
+          source={document.content ?? ''}
+          {...commonProps}
+        />
       ) : null}
     </div>
   );

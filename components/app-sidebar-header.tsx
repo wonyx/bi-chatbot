@@ -7,7 +7,7 @@ import {
 import Link from 'next/link';
 
 export type AppSidebarHeaderProps = {};
-export function AppSidebarHeader(props: AppSidebarHeaderProps) {
+export function AppSidebarHeader(_props: AppSidebarHeaderProps) {
   const { setOpenMobile } = useSidebar();
   return (
     <SidebarHeader>

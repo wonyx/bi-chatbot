@@ -6,7 +6,14 @@ import { CodeBlock } from './code-block';
 
 const components: Partial<Components> = {
   // @ts-expect-error
-  code: CodeBlock,
+  code: ({ node, inline, children, ...props }) => {
+    return CodeBlock({
+      node,
+      inline: true,
+      children: typeof children === 'string' ? children : String(children),
+      ...props,
+    } as any);
+  },
   pre: ({ children }) => <>{children}</>,
   ol: ({ node, children, ...props }) => {
     return (

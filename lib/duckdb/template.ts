@@ -1,5 +1,4 @@
-import nunjucks from 'nunjucks'
-
-export async function renderString(str: string, context: object) {
-  return nunjucks.renderString(str, context)
+import Mustache from 'mustache';
+export async function renderString(str: string, _context: object) {
+  return Mustache.render(str, _context);
 }

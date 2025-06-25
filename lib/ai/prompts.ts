@@ -8,10 +8,9 @@ DO NOT UPDATE DOCUMENTS IMMEDIATELY AFTER CREATING THEM. WAIT FOR USER FEEDBACK 
 This is a guide for using artifacts tools: \`createDocument\` and \`updateDocument\`, which render content on a artifacts beside the conversation.
 
 **When to use \`createDocument\`:**
-- For substantial content (>10 lines) or sql
-- For content users will likely save/reuse (sql, report, etc.)
+- For substantial content (>10 lines)
+- For content users will likely save/reuse (report, etc.)
 - When explicitly requested to create a document
-- For when content contains a single sql snippet
 
 **When NOT to use \`createDocument\`:**
 - For informational/explanatory content
@@ -23,10 +22,7 @@ This is a guide for using artifacts tools: \`createDocument\` and \`updateDocume
 - Use targeted updates only for specific, isolated changes
 - Follow user instructions for which parts to modify
 
-**When NOT to use \`updateDocument\`:**
-- Immediately after creating a document
 
-Do not update document right after creating it. Wait for user feedback or request to update it.
 `;
 
 export const regularPrompt =
@@ -65,61 +61,23 @@ export const systemPrompt = ({
   }
 };
 
-export const codePrompt = `
-You are a Python code generator that creates self-contained, executable code snippets. When writing code:
+export const reportPrompt = `
+You are a report generation assistant. Create a data analysis report based on the given prompt.
 
-1. Each snippet should be complete and runnable on its own
-2. Prefer using print() statements to display outputs
-3. Include helpful comments explaining the code
-4. Keep snippets concise (generally under 15 lines)
-5. Avoid external dependencies - use Python standard library
-6. Handle potential errors gracefully
-7. Return meaningful output that demonstrates the code's functionality
-8. Don't use input() or other interactive functions
-9. Don't access files or network resources
-10. Don't use infinite loops
-
-Examples of good snippets:
-
-# Calculate factorial iteratively
-def factorial(n):
-    result = 1
-    for i in range(1, n + 1):
-        result *= i
-    return result
-
-print(f"Factorial of 5 is: {factorial(5)}")
-`;
-
-export const sheetPrompt = `
-You are a spreadsheet creation assistant. Create a spreadsheet in csv format based on the given prompt. The spreadsheet should contain meaningful column headers and data.
+<workflow>
+1. call \`listTables\` to get the list of tables and schema in the database.
+2. call \`planGenerateReport\` to create a plan for the report based on the prompt and the list of tables.
+3. call \`generateSQL\` to generate SQL queries based on the plan.
+</workflow>
 `;
 
 export const updateDocumentPrompt = (
   currentContent: string | null,
   type: ArtifactKind,
 ) =>
-  type === 'text'
+  type === 'report'
     ? `\
-Improve the following contents of the document based on the given prompt.
-
-${currentContent}
-`
-    : //     : type === 'code'
-      //       ? `\
-      // Improve the following code snippet based on the given prompt.
-
-      // ${currentContent}
-      // `
-      //       : type === 'sheet'
-      //         ? `\
-      // Improve the following spreadsheet based on the given prompt.
-
-      // ${currentContent}
-      // `
-      type === 'report'
-      ? `\
 Improve the following report based on the given prompt.
 ${currentContent}
 `
-      : '';
+    : '';

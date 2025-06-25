@@ -16,7 +16,7 @@ const menuItems = [
   { name: 'Reports', href: '/reports', icon: <FileChartColumn /> },
 ];
 export type AppSidebarMenuProps = {};
-export function AppSidebarMenu(props: AppSidebarMenuProps) {
+export function AppSidebarMenu(_props: AppSidebarMenuProps) {
   return (
     <SidebarGroup>
       <SidebarGroupContent>
@@ -37,7 +37,7 @@ function AppSidebarMenuItem(item: {
   const pathname = usePathname();
   const isActive = pathname === item.href;
   return (
-    <SidebarMenuItem key={item.name}>
+    <SidebarMenuItem>
       <SidebarMenuButton asChild isActive={isActive}>
         <NextLink href={item.href}>
           {item.icon}

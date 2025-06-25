@@ -10,7 +10,6 @@ import { PencilEditIcon, SparklesIcon } from './icons';
 import { Markdown } from './markdown';
 import { MessageActions } from './message-actions';
 import { PreviewAttachment } from './preview-attachment';
-import { Weather } from './weather';
 import equal from 'fast-deep-equal';
 import { cn, sanitizeText } from '@/lib/utils';
 import { Button } from './ui/button';
@@ -19,6 +18,12 @@ import { MessageEditor } from './message-editor';
 import { DocumentPreview } from './document-preview';
 import { MessageReasoning } from './message-reasoning';
 import type { UseChatHelpers } from '@ai-sdk/react';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from './ui/collapsible';
+import { ChevronsDownUp } from 'lucide-react';
 
 const PurePreviewMessage = ({
   chatId,
@@ -161,15 +166,8 @@ const PurePreviewMessage = ({
                   const { args } = toolInvocation;
 
                   return (
-                    <div
-                      key={toolCallId}
-                      className={cx({
-                        skeleton: ['getWeather'].includes(toolName),
-                      })}
-                    >
-                      {toolName === 'getWeather' ? (
-                        <Weather />
-                      ) : toolName === 'createDocument' ? (
+                    <div key={toolCallId}>
+                      {toolName === 'createDocument' ? (
                         <DocumentPreview isReadonly={isReadonly} args={args} />
                       ) : toolName === 'updateDocument' ? (
                         <DocumentToolCall
@@ -193,9 +191,7 @@ const PurePreviewMessage = ({
 
                   return (
                     <div key={toolCallId}>
-                      {toolName === 'getWeather' ? (
-                        <Weather weatherAtLocation={result} />
-                      ) : toolName === 'createDocument' ? (
+                      {toolName === 'createDocument' ? (
                         <DocumentPreview
                           isReadonly={isReadonly}
                           result={result}
@@ -213,7 +209,19 @@ const PurePreviewMessage = ({
                           isReadonly={isReadonly}
                         />
                       ) : (
-                        <pre>{JSON.stringify(result, null, 2)}</pre>
+                        <Collapsible>
+                          <CollapsibleTrigger className="w-full">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-muted-foreground">
+                                Tool Result
+                              </span>
+                              <ChevronsDownUp size={14} />
+                            </div>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="mt-2">
+                            <pre>{JSON.stringify(result, null, 2)}</pre>
+                          </CollapsibleContent>
+                        </Collapsible>
                       )}
                     </div>
                   );

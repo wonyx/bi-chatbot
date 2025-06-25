@@ -154,7 +154,7 @@ function PureMultimodalInput({
       }
       const { error } = await response.json();
       toast.error(error);
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to upload file, please try again!');
     }
   };
@@ -291,9 +291,10 @@ function PureMultimodalInput({
         }}
       />
 
-      <div className="absolute bottom-0 p-2 w-fit flex flex-row justify-start">
+      {/* disable attachments */}
+      {/* <div className="absolute bottom-0 p-2 w-fit flex flex-row justify-start">
         <AttachmentsButton fileInputRef={fileInputRef} status={status} />
-      </div>
+      </div> */}
 
       <div className="absolute bottom-0 right-0 p-2 w-fit flex flex-row justify-end">
         {status === 'submitted' ? (
@@ -346,7 +347,7 @@ function PureAttachmentsButton({
   );
 }
 
-const AttachmentsButton = memo(PureAttachmentsButton);
+const _AttachmentsButton = memo(PureAttachmentsButton);
 
 function PureStopButton({
   stop,
