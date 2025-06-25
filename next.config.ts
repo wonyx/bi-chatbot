@@ -12,9 +12,6 @@ jiti('./app/env');
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: 'standalone',
-  experimental: {
-    ppr: true,
-  },
   images: {
     remotePatterns: [
       {
