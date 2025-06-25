@@ -303,6 +303,7 @@ export async function saveDocument({
       })
       .returning();
   } catch (_error) {
+    console.error('Error saving document:', _error);
     throw new ChatSDKError('bad_request:database', 'Failed to save document');
   }
 }
@@ -472,7 +473,10 @@ export async function updateChatVisiblityById({
 export async function getMessageCountByUserId({
   id,
   differenceInHours,
-}: { id: string; differenceInHours: number }) {
+}: {
+  id: string;
+  differenceInHours: number;
+}) {
   try {
     const twentyFourHoursAgo = new Date(
       Date.now() - differenceInHours * 60 * 60 * 1000,
