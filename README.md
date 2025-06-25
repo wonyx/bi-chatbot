@@ -13,7 +13,7 @@ This project is built on top of [Chat SDK](https://github.com/vercel/ai-chatbot)
 |----------|----------|------------|------|
 | Hosting  | Vercel   | Cloud Run | |
 | Database | Neon     | Cloud SQL  | |
-| Blob Storage | Vercel Blob | Cloud Storage | |
+| Blob Storage | Vercel Blob | - | 添付ファイルは無効化している |
 | AI Model | xAI Grok | Google Gemini | |
 | Cache | Vercel | - | 複数のインスタンスで共有するキャッシュはないので、一つのインスタンスで構成する |
 | KV Store | Redis | - | ChatのResumable streamsのためにRedisを使えるが、使用していない |
@@ -70,7 +70,7 @@ pnpm dev
 
 ```bash
 IMAGE=asia-northeast1-docker.pkg.dev/<your-project>/<repo-name>/bi-chatbot:latest
-docker build -t $IMAGE .
+docker build --platform linux/amd64 -t $IMAGE .
 ```
 ### Push to Artifact Registry
 ```bash
