@@ -25,10 +25,7 @@ export async function GET(
   }
 
   const storage = await createContentStorage(env);
-  const cli = await createDBClient({
-    initSqlDir: env.INIT_DB_DIR,
-    initSqlFile: env.INIT_DB_SQL,
-  });
+  const cli = await createDBClient(env);
   const content = await storage.getItemRaw(id);
 
   if (!content) {

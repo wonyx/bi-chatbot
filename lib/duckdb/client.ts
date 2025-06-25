@@ -2,21 +2,20 @@ import duckdb, { DuckDBInstance } from '@duckdb/node-api';
 import fs from 'node:fs';
 import { renderString } from './template';
 import path from 'node:path';
+import { createContentStorage } from '../storage/client';
 let isInitialized = false;
 let instance: DuckDBInstance;
-export type createDBClientArgs = {
-  initSqlDir?: string;
-  initSqlFile?: string;
-};
-export async function createDBClient(args: createDBClientArgs) {
+export interface createDBClientArgs {
+  CONTENT_UNSTORAGE_INIT_DB_SQL: string;
+}
+export async function createDBClient(env: createDBClientArgs) {
   if (!isInitialized) {
+    const storage = await createContentStorage(env);
+
     instance = await DuckDBInstance.create();
     isInitialized = true;
     console.log('initializing duckdb cwd:', process.cwd());
-    const initSql = fs.readFileSync(
-      path.join(args?.initSqlDir || '', args?.initSqlFile || ''),
-      'utf-8',
-    );
+    const initSql = await storage.getItemRaw(env.CONTENT_UNSTORAGE_INIT_DB_SQL);
     const templated = await renderString(initSql, process.env);
     // console.log('running init sql', initSql, templated);
 

@@ -8,10 +8,7 @@ export const listTables = tool({
   parameters: z.object({}),
   execute: async () => {
     console.log('Listing tables in the database');
-    const cli = await createDBClient({
-      initSqlDir: env.INIT_DB_DIR,
-      initSqlFile: env.INIT_DB_SQL,
-    });
+    const cli = await createDBClient(env);
     return cli.getSchema();
   },
 });
