@@ -1,7 +1,5 @@
 import duckdb, { DuckDBInstance } from '@duckdb/node-api';
-import fs from 'node:fs';
 import { renderString } from './template';
-import path from 'node:path';
 import { createContentStorage } from '../storage/client';
 let isInitialized = false;
 let instance: DuckDBInstance;
