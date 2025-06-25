@@ -69,10 +69,19 @@ pnpm dev
 ### Build
 
 ```bash
-ARTIFACT_REGISTRY=asia-northeast1-docker.pkg.dev/<your-project>/<repo-name>/bi-chatbot:latest
-docker build -t $ARTIFACT_REGISTRY .
+IMAGE=asia-northeast1-docker.pkg.dev/<your-project>/<repo-name>/bi-chatbot:latest
+docker build -t $IMAGE .
 ```
 ### Push to Artifact Registry
 ```bash
-docker push $ARTIFACT_REGISTRY
+docker push $IMAGE
+```
+
+### Deploy to Cloud Run
+```bash
+SERVICE_NAME=bi-chatbot
+REGION=asia-northeast1
+gcloud run deploy $SERVICE_NAME \
+  --image $IMAGE \
+  --region $REGION
 ```
