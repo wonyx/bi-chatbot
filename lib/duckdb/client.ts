@@ -1,38 +1,31 @@
 import duckdb, { DuckDBInstance } from '@duckdb/node-api';
 import { renderString } from './template';
 import { createContentStorage } from '../storage/client';
-let isInitialized = false;
-let instance: DuckDBInstance;
+import { GlobalRef } from '../global-ref';
+const instance = new GlobalRef<DuckDBInstance>('duckdb.client');
 export interface createDBClientArgs {
   CONTENT_UNSTORAGE_INIT_DB_SQL: string;
 }
 export async function createDBClient(env: createDBClientArgs) {
-  if (!isInitialized) {
+  if (!instance.value) {
     const storage = await createContentStorage(env);
 
-    instance = await DuckDBInstance.create();
-    isInitialized = true;
+    instance.value = await DuckDBInstance.create();
     console.log('initializing duckdb cwd:', process.cwd());
     const initSql = await storage.getItemRaw(env.CONTENT_UNSTORAGE_INIT_DB_SQL);
     const templated = await renderString(initSql.toString(), process.env);
     // console.log('running init sql', initSql, templated);
 
-    const conn = await instance.connect();
+    const conn = await instance.value.connect();
     const _initRes = await conn.run(templated);
     // console.log('init res', await toJson(initRes));
-  }
-  // console.log('after init sql');
-  const conn = await instance.connect();
-  // console.log('after connect');
-  if (!conn) {
-    console.error('no connection');
-    throw new Error('no connection');
   }
   return {
     query: async (
       query: string,
     ): Promise<duckdb.DuckDBMaterializedResult | undefined> => {
       // console.log('running query', query);
+      const conn = await instance.value.connect();
       const res = await conn.run(query).catch((e) => {
         console.error('error', e);
         throw e;
