@@ -14,7 +14,7 @@ export async function createDBClient(env: createDBClientArgs) {
     isInitialized = true;
     console.log('initializing duckdb cwd:', process.cwd());
     const initSql = await storage.getItemRaw(env.CONTENT_UNSTORAGE_INIT_DB_SQL);
-    const templated = await renderString(initSql, process.env);
+    const templated = await renderString(initSql.toString(), process.env);
     // console.log('running init sql', initSql, templated);
 
     const conn = await instance.connect();
