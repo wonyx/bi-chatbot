@@ -8,7 +8,7 @@ export const listTables = tool({
   parameters: z.object({}),
   execute: async () => {
     console.log('Listing tables in the database');
-    const cli = await createDBClient(env);
+    const cli = await createDBClient();
     return cli.getSchema();
   },
 });

@@ -28,7 +28,7 @@ export const generateQueryTool = tool({
 });
 
 async function _validateSQL(query: string) {
-  const cli = await createDBClient(env);
+  const cli = await createDBClient();
   try {
     await cli.query(query);
     return true;

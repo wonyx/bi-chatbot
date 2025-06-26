@@ -2,13 +2,11 @@ import duckdb, { DuckDBInstance } from '@duckdb/node-api';
 import { renderString } from './template';
 import { createContentStorage } from '../storage/client';
 import { GlobalRef } from '../global-ref';
+import { env } from '@/app/env';
 const instance = new GlobalRef<DuckDBInstance>('duckdb.client');
-export interface createDBClientArgs {
-  CONTENT_UNSTORAGE_INIT_DB_SQL: string;
-}
-export async function createDBClient(env: createDBClientArgs) {
+export async function createDBClient() {
   if (!instance.value) {
-    const storage = await createContentStorage(env);
+    const storage = await createContentStorage();
 
     instance.value = await DuckDBInstance.create();
     console.log('initializing duckdb cwd:', process.cwd());

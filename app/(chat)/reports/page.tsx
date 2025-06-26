@@ -6,7 +6,7 @@ import * as runtime from 'react/jsx-runtime';
 
 export type PageProps = {};
 export default async function Page(_props: PageProps) {
-  const storage = await createContentStorage(env);
+  const storage = await createContentStorage();
   const source = await storage.getContent(decodeURIComponent('README.md'));
   const { default: MDXContent } = await evaluate(source, runtime);
   return (

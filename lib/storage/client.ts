@@ -3,9 +3,10 @@ import { Storage, createStorage, prefixStorage } from 'unstorage';
 import fsDriver from 'unstorage/drivers/fs-lite';
 import githubDriver from 'unstorage/drivers/github';
 import { GlobalRef } from '../global-ref';
+import { env } from '@/app/env';
 const storage = new GlobalRef<Storage>('storage');
 
-export function createContentStorage(env: any) {
+export function createContentStorage() {
   const source = env.CONTENT_UNSTORAGE_DRIVER;
   if (!storage.value) {
     switch (source) {

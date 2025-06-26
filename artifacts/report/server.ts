@@ -15,7 +15,7 @@ export const customDocumentHandler = createDocumentHandler<'report'>({
     try {
       let draftContent = '';
 
-      const cli = await createDBClient(env);
+      const cli = await createDBClient();
       console.log('Creating report', title, message);
       const schema = await cli.getSchema();
       // For demonstration, use streamText to generate content.
@@ -56,7 +56,7 @@ export const customDocumentHandler = createDocumentHandler<'report'>({
     }
     const report = matter(document.content);
 
-    const cli = await createDBClient(env);
+    const cli = await createDBClient();
     console.log('Updating report', document.title, description);
     const schema = await cli.getSchema();
     // For demonstration, use smoothStream to generate content.
