@@ -120,7 +120,7 @@ function toDataset(res: Record<string, any>): {
   };
 }
 
-function PortraitLayout({ children }: PropsWithChildren) {
+export function PortraitLayout({ children }: PropsWithChildren) {
   return (
     <div className="mx-auto p-2.5 w-full min-w-0 max-w-2xl ">
       <article className="prose prose-gray dark:prose-invert">
@@ -130,7 +130,7 @@ function PortraitLayout({ children }: PropsWithChildren) {
   );
 }
 
-function LandscapeLayout({ children }: PropsWithChildren) {
+export function LandscapeLayout({ children }: PropsWithChildren) {
   return (
     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
       <article
