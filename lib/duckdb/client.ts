@@ -39,12 +39,6 @@ export async function createDBClient(env: createDBClientArgs) {
       });
       return res;
     },
-    async toJson(res: duckdb.DuckDBMaterializedResult) {
-      return {
-        columns: await res.columnNamesAndTypesJson(),
-        rows: await res.getRowObjectsJson(),
-      };
-    },
     async getSchema() {
       const cli = this;
       const res = await cli.query('SHOW TABLES');
@@ -71,7 +65,7 @@ export async function createDBClient(env: createDBClientArgs) {
         ret.map(async (item) => {
           return {
             name: item.name,
-            schema: await cli.toJson(item.schema),
+            schema: await toJson(item.schema),
           };
         }),
       );
