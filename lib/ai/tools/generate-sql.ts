@@ -5,7 +5,8 @@ import { GoogleGenerativeAIProviderOptions } from '@ai-sdk/google';
 import { generateObject, tool } from 'ai';
 import { z } from 'zod';
 import { syntaxPrompt } from '../duckdb-prompt';
-import { sharedChartPropsSchema } from '@/lib/zod-schema';
+import { chartPropsSchema, sharedChartPropsSchema } from '@/lib/zod-schema';
+import { error } from 'console';
 
 export const generateQueryTool = tool({
   description: 'Generate SQL queries based on user input',
@@ -51,14 +52,37 @@ export async function generateQuery({
 }) {
   return generateObject({
     model: myProvider.languageModel('sql-model'),
-    system: `You are helpful assistant to generate SQL Query.
+    system: `You are helpful assistant to generate a Data Analytics Report.
+<Definition>
+- Data Analytics Report is a document that formatted MDX(Markdown + JSX).
+- It contains SQL queries and visualizations based on the provided dataset.
+- 
+</Definition>
+<SQLSyntax>
 ${syntaxPrompt}
----
+</SQLSyntax>
+
 MUST follow the schema below to generate SQL queries.
-\`\`\`json
+<SQLSchema>
 ${schema}
-\`\`\`
----
+</SQLSchema>
+
+<DetasetDescription>
+</DetasetDescription>
+
+<Instructions>
+- ユーザの指示に基づいて、適切なデータセットを選びます。
+  - もし、ユーザが特定のデータセットを指定していない場合は、最も関連性の高いデータセットを選択します。
+  - もし、データがない場合は、適切なエラーメッセージを返します。
+- ユーザの指示に基づいて、適切なチャートタイプを選びます。
+  - ユーザがチャートタイプを指定していない場合は、最も適切なチャートタイプを選択します。
+- ユーザの指示に基づいて、SQLクエリを生成します。
+- ユーザの指示に基づいて、チャートのプロパティを生成します。
+
+</Instructions>
+
+<Chart>
+<ChartType>
 determine the type of chart to generate SQL for based on the user input.
 
 - If a chart type is specified in the user's instructions, that type will be used.
@@ -70,7 +94,9 @@ determine the type of chart to generate SQL for based on the user input.
     Area charts share some similarities with these other chart types, but they excel at displaying the volume or magnitude of data changes.
 - **Pie Chart**
     Pie charts use a circular graph to visually represent data proportions, showing the ratio of each part to the whole.
-
+</ChartType>
+出力するチャートプロパティは、
+</Chart>
 ---
 You need to consider the following when generating SQL queries:
 - Ensure the SQL query is valid and can be executed against the provided schema.
@@ -85,9 +111,13 @@ You need to consider the following when generating SQL queries:
       chartType: z
         .enum(['bar', 'line', 'area', 'pie'])
         .describe('The type of chart to generate SQL for'),
-      chartProps: sharedChartPropsSchema.describe(
+      chartProps: chartPropsSchema.describe(
         'The properties of the chart to be generated',
       ),
+      error: z
+        .string()
+        .optional()
+        .describe('Error message if SQL generation fails'),
     }),
     providerOptions: {
       google: {
