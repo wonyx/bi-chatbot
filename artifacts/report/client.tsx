@@ -91,7 +91,7 @@ export const customArtifact = new Artifact<'report', CustomArtifactMetadata>({
         const { content, metadata } = params;
         await addReportToGitHub({
           content,
-          filename: `report-${metadata.documentId}.md`,
+          filename: `report-${metadata.documentId}.mdx`,
         });
       },
     },
