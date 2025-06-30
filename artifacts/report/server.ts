@@ -1,11 +1,11 @@
-import { env } from '@/app/env';
-import { reportPrompt } from '@/lib/ai/prompts';
-import { myProvider } from '@/lib/ai/providers';
-import { generateQuery } from '@/lib/ai/tools/generate-sql';
+import {
+  generateMdxContent,
+  generateQuery,
+  updateMdxReport,
+} from '@/lib/ai/tools/generate-sql';
 import { createDocumentHandler } from '@/lib/artifacts/server';
 import { createDBClient } from '@/lib/duckdb/client';
-import { sharedChartPropsSchema } from '@/lib/zod-schema';
-import { generateObject } from 'ai';
+import { generateChartPropsSchema } from '@/lib/zod-schema';
 import matter, { stringify } from 'gray-matter';
 
 export const customDocumentHandler = createDocumentHandler<'report'>({
@@ -25,7 +25,7 @@ export const customDocumentHandler = createDocumentHandler<'report'>({
       });
       console.log('generateQuery res:', object);
 
-      draftContent = createReportMdx({
+      draftContent = await createReportMdx({
         title,
         id: 'report1',
         query: object.sql,
@@ -54,107 +54,70 @@ export const customDocumentHandler = createDocumentHandler<'report'>({
     if (!document.content) {
       throw new Error('Document content is empty');
     }
-    const report = matter(document.content);
-
+    const mdxContent = matter(document.content);
     const cli = await createDBClient();
-    console.log('Updating report', document.title, description);
     const schema = await cli.getSchema();
-    // For demonstration, use smoothStream to generate content.
 
-    const { object } = await generateQuery({
-      userInput: description,
-      schema: JSON.stringify(schema),
-      current: {
-        sql: report.data.sql.report1.content,
-        chartType: report.data.chart.report1.type,
-      },
+    let report: Awaited<ReturnType<typeof updateMdxReport>> | undefined;
+    let lastQuery = '';
+    let validationResult:
+      | { isValid: boolean; errorMessage?: string }
+      | undefined;
+    while (!validationResult?.isValid) {
+      report = await updateMdxReport({
+        content: mdxContent.content,
+        schema: JSON.stringify(schema),
+        userInput: description,
+        sqlError: validationResult?.errorMessage,
+      });
+      // Use report.object.sql for validation
+      lastQuery = report.object?.sql || '';
+      validationResult = await validateSQL(lastQuery);
+    }
+    console.log('Parsed report:', report, generateChartPropsSchema.toString());
+    if (!report) throw new Error('Report was not generated');
+    draftContent = await createReportMdx({
+      title: document.title,
+      id: `report1`,
+      query: report.object?.sql || '',
+      chartType: report.object.chartType,
+      chartProps: report.object.chartProps,
     });
-    console.log('generateQuery res:', object);
-    const { object: chartProps } = await generateChartProps({
-      chartType: object.chartType,
-    });
-
-    draftContent = createReportMdx({
-      title: report.data.title,
-      id: 'report1',
-      query: object.sql,
-      chartType: object.chartType,
-      chartProps,
-    });
-
     return draftContent;
   },
 });
 
-async function generateChartProps({
-  chartType,
-}: {
-  chartType: 'bar' | 'line' | 'area' | 'pie';
-}) {
-  switch (chartType) {
-    case 'bar':
-    case 'line':
-    case 'area':
-      return generateObject({
-        model: myProvider.languageModel('artifact-model'),
-        system: reportPrompt,
-        prompt: `Generate chart properties for a ${chartType} chart.`,
-        schema: sharedChartPropsSchema,
-      });
-    case 'pie':
-    default:
-      throw new Error(`Unsupported chart type: ${chartType}`);
-  }
-}
-function createReportMdx(args: {
+async function createReportMdx(args: {
   title: string;
   id: string;
   query: string;
-  chartType?: 'bar' | 'line' | 'area' | 'pie';
+  chartType: 'bar' | 'line' | 'area' | 'pie';
   chartProps: Record<string, any>;
 }) {
   const { title, id, query, chartType } = args;
-  let content = '';
-  switch (chartType) {
-    case 'bar':
-      content = `
-<BarChart
-  {...frontmatter.chart.${id}}
-  {...props.data.${id}}
-/>
-`;
-      break;
-    case 'line':
-      content = `
-<LineChart
-  {...frontmatter.chart.${id}}
-  {...props.data.${id}}
-/>
-`;
-      break;
-    case 'pie':
-      content = `
-<PieChart
-  {...frontmatter.chart.${id}}
-  {...props.data.${id}}
-/>`;
-      break;
-    default:
-      throw new Error(`Unsupported chart type: ${chartType}`);
-  }
+  const content = await generateMdxContent({
+    chartType: chartType,
+    chartProps: args.chartProps,
+  });
 
-  return stringify(content, {
+  return stringify(content.text, {
     title,
     sql: {
       [id]: {
         content: query,
       },
     },
-    chart: {
-      [id]: {
-        ...args.chartProps,
-        type: chartType,
-      },
-    },
   });
+}
+async function validateSQL(
+  query: string,
+): Promise<{ isValid: boolean; errorMessage?: string }> {
+  const cli = await createDBClient();
+  try {
+    await cli.query(query);
+    return { isValid: true };
+  } catch (error) {
+    console.error('SQL validation error:', error);
+    return { isValid: false, errorMessage: error.message };
+  }
 }

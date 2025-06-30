@@ -4,19 +4,6 @@ const frontmatterSchema = z.object({
   title: z.string().optional(),
   description: z.string().optional(),
   layout: z.enum(['portrait', 'landscape']).default('portrait'),
-  data: z
-    .record(
-      z.object({
-        dataset: z
-          .object({
-            dimensions: z.array(z.object({ name: z.string() })),
-            source: z.array(z.any()),
-          })
-          .optional(),
-      }),
-    )
-    .optional()
-    .nullable(),
   sql: z
     .record(
       z
@@ -31,18 +18,6 @@ const frontmatterSchema = z.object({
     )
     .optional()
     .nullable(),
-  chart: z.record(
-    z
-      .string()
-      .describe(
-        'key of the chart, used in the report. this is MUST BE unique in the object.',
-      ),
-    z.any().describe('Chart properties for the report'),
-  ),
-  searchParams: z
-    .record(z.union([z.number(), z.string(), z.array(z.string())]))
-    .optional()
-    .nullable(),
 });
 export type Frontmatter = z.infer<typeof frontmatterSchema>;
 export const validateFrontmatter = (data: unknown): Frontmatter => {
@@ -53,8 +28,14 @@ export const validateFrontmatter = (data: unknown): Frontmatter => {
   return result.data;
 };
 
+export const chartTypeSchema = z
+  .enum(['bar', 'line', 'area', 'pie'])
+  .describe('Type of the chart to generate SQL for');
+
+export type ChartType = z.infer<typeof chartTypeSchema>;
+
 export const sharedChartPropsSchema = z.object({
-  chartType: z.enum(['bar', 'line', 'area']).describe('Type of the chart'),
+  chartType: chartTypeSchema,
   dataset: z.any().describe('Dataset for the chart'),
   x: z.string().optional().describe('X-axis field name'),
   y: z
@@ -77,7 +58,9 @@ export const sharedChartPropsSchema = z.object({
 });
 
 export type SharedChartProps = z.infer<typeof sharedChartPropsSchema>;
-export const barChartPropsSchema = sharedChartPropsSchema.omit({
+export const generateChartPropsSchema = sharedChartPropsSchema.omit({
   chartType: true,
   dataset: true,
 });
+
+export type GenerateChartProps = z.infer<typeof generateChartPropsSchema>;

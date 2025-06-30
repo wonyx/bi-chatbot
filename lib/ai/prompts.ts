@@ -1,7 +1,7 @@
 import type { ArtifactKind } from '@/components/artifact';
 
 export const artifactsPrompt = `
-Artifacts is a special user interface mode that helps users with writing, editing, and other content creation tasks. When artifact is open, it is on the right side of the screen, while the conversation is on the left side. When creating or updating documents, changes are reflected in real-time on the artifacts and visible to the user.
+Artifacts is a special user interface mode that helps users with writing, editing, and data analytics report creation tasks. When artifact is open, it is on the right side of the screen, while the conversation is on the left side. When creating or updating documents, changes are reflected in real-time on the artifacts and visible to the user.
 
 DO NOT UPDATE DOCUMENTS IMMEDIATELY AFTER CREATING THEM. WAIT FOR USER FEEDBACK OR REQUEST TO UPDATE IT.
 
@@ -9,7 +9,7 @@ This is a guide for using artifacts tools: \`createDocument\` and \`updateDocume
 
 **When to use \`createDocument\`:**
 - For substantial content (>10 lines)
-- For content users will likely save/reuse (report, etc.)
+- For content users will likely save/reuse (data analytics report, etc.)
 - When explicitly requested to create a document
 
 **When NOT to use \`createDocument\`:**
@@ -81,3 +81,19 @@ Improve the following report based on the given prompt.
 ${currentContent}
 `
     : '';
+
+export const chartTypePrompt = `\
+<ChartType>
+determine the type of chart to generate SQL for based on the user input.
+
+- If a chart type is specified in the user's instructions, that type will be used.
+- **Bar Chart**
+    Bar charts use vertical or horizontal bars to represent data, making it easy to compare values across categories.
+- **Line Chart**
+    Line charts display data points connected by lines, making it easy to observe trends over time.
+- **Area Chart**
+    Area charts share some similarities with these other chart types, but they excel at displaying the volume or magnitude of data changes.
+- **Pie Chart**
+    Pie charts use a circular graph to visually represent data proportions, showing the ratio of each part to the whole.
+</ChartType>
+`;

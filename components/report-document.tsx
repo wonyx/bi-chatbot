@@ -74,32 +74,25 @@ export function ReportDocument(props: ReportDocumentProps) {
     return ret;
   }, [res]);
 
-  if (isError) {
-    console.error('Error fetching report data:', error);
-    return <div>error</div>;
-  }
-  if (isLoading || !MdxContent) {
+  if (isLoading || !MdxContent || !data) {
     return (
       <div className="flex justify-center items-center size-full">
         <InlineDocumentSkeleton />
       </div>
     );
   }
-  if (!data) {
-    return null;
+  if (isError) {
+    console.error('Error fetching report data:', error);
+    return <div>error</div>;
   }
 
   return frontmatter.layout === 'landscape' ? (
     <LandscapeLayout>
-      <div className="prose prose-gray dark:prose-invert">
-        <MdxContent components={mdxComponents} data={data} />
-      </div>
+      <MdxContent components={mdxComponents} data={data} />
     </LandscapeLayout>
   ) : (
     <PortraitLayout>
-      <div className="prose prose-gray dark:prose-invert">
-        <MdxContent components={mdxComponents} data={data} />
-      </div>
+      <MdxContent components={mdxComponents} data={data} />
     </PortraitLayout>
   );
 }
