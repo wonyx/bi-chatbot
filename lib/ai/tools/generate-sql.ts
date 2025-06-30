@@ -29,13 +29,11 @@ export const generateQueryTool = tool({
 export async function generateQuery({
   userInput,
   schema,
+  metadata,
 }: {
   userInput: string;
   schema: string;
-  current?: {
-    sql: string;
-    chartType: 'bar' | 'line' | 'area' | 'pie';
-  };
+  metadata?: string;
 }) {
   return generateObject({
     model: myProvider.languageModel('sql-model'),
@@ -54,8 +52,9 @@ MUST follow the schema below to generate SQL queries.
 ${schema}
 </SQLSchema>
 
-<DetasetDescription>
-</DetasetDescription>
+<DetasetMetadata>
+${metadata || 'No dataset metadata provided.'}
+</DetasetMetadata>
 
 <Instructions>
 - ユーザの指示に基づいて、適切なデータセットを選びます。
@@ -82,7 +81,6 @@ determine the type of chart to generate SQL for based on the user input.
 - **Pie Chart**
     Pie charts use a circular graph to visually represent data proportions, showing the ratio of each part to the whole.
 </ChartType>
-出力するチャートプロパティは、
 </Chart>
 ---
 You need to consider the following when generating SQL queries:
@@ -120,11 +118,13 @@ export async function updateMdxReport({
   content,
   userInput,
   schema,
+  metadata,
   sqlError,
 }: {
   content: string;
   userInput: string;
   schema: string;
+  metadata?: string;
   sqlError?: string;
 }) {
   const obj = await generateObject({
@@ -145,8 +145,9 @@ ${schema}
 
 ${sqlError ? `MUST FIX THE ERROR BELOW<SQLError>${sqlError}</SQLError>` : ''}
 
-<DetasetDescription>
-</DetasetDescription>
+<DetasetMetadata>
+${metadata || 'No dataset metadata provided.'}
+</DetasetMetadata>
 
 <Instructions>
 - ユーザの指示に基づいて、適切なデータセットを選びます。
@@ -214,6 +215,7 @@ export async function generateMdxContent({
 <Instructions>
 - JUST add the chart component to the MDX content.
 - DO NOT add frontmatter or any other content.
+- MUST add \`{...props.data.report1}\` to the chart component. because the chart component will be called with props.data.report1.
 </Instructions>
 <ChartType>
 ${chartTypePrompt}

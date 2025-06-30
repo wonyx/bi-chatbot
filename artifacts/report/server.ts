@@ -1,3 +1,4 @@
+import { env } from '@/app/env';
 import {
   generateMdxContent,
   generateQuery,
@@ -5,6 +6,7 @@ import {
 } from '@/lib/ai/tools/generate-sql';
 import { createDocumentHandler } from '@/lib/artifacts/server';
 import { createDBClient } from '@/lib/duckdb/client';
+import { createContentStorage } from '@/lib/storage/client';
 import { generateChartPropsSchema } from '@/lib/zod-schema';
 import matter, { stringify } from 'gray-matter';
 
@@ -18,10 +20,15 @@ export const customDocumentHandler = createDocumentHandler<'report'>({
       const cli = await createDBClient();
       console.log('Creating report', title, message);
       const schema = await cli.getSchema();
+      const storage = await createContentStorage();
+      const metadata = await storage.getContent(
+        env.CONTENT_UNSTORAGE_DATASET_METADATA,
+      );
       // For demonstration, use streamText to generate content.
       const { object } = await generateQuery({
         userInput: message,
         schema: JSON.stringify(schema),
+        metadata: metadata,
       });
       console.log('generateQuery res:', object);
 
@@ -57,6 +64,10 @@ export const customDocumentHandler = createDocumentHandler<'report'>({
     const mdxContent = matter(document.content);
     const cli = await createDBClient();
     const schema = await cli.getSchema();
+    const storage = await createContentStorage();
+    const metadata = await storage.getContent(
+      env.CONTENT_UNSTORAGE_DATASET_METADATA,
+    );
 
     let report: Awaited<ReturnType<typeof updateMdxReport>> | undefined;
     let lastQuery = '';
@@ -68,6 +79,7 @@ export const customDocumentHandler = createDocumentHandler<'report'>({
         content: mdxContent.content,
         schema: JSON.stringify(schema),
         userInput: description,
+        metadata: metadata,
         sqlError: validationResult?.errorMessage,
       });
       // Use report.object.sql for validation
@@ -118,6 +130,7 @@ async function validateSQL(
     return { isValid: true };
   } catch (error) {
     console.error('SQL validation error:', error);
+    // @ts-ignore
     return { isValid: false, errorMessage: error.message };
   }
 }

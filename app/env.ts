@@ -11,6 +11,7 @@ export const env = createEnv({
     CONTENT_UNSTORAGE_GITHUB_DIR: z.string().default('/'),
     CONTENT_UNSTORAGE_GITHUB_TOKEN: z.string().optional(),
     CONTENT_UNSTORAGE_INIT_DB_SQL: z.string().default('initdb.d:init.sql'),
+    CONTENT_UNSTORAGE_DATASET_METADATA: z.string().default('metadata.md'),
   },
   runtimeEnv: {
     BASE_URL: process.env.BASE_URL || 'http://localhost:3000',
@@ -22,5 +23,6 @@ export const env = createEnv({
     CONTENT_UNSTORAGE_GITHUB_DIR: process.env.CONTENT_UNSTORAGE_GITHUB_DIR,
     CONTENT_UNSTORAGE_GITHUB_TOKEN: process.env.CONTENT_UNSTORAGE_GITHUB_TOKEN,
     CONTENT_UNSTORAGE_INIT_DB_SQL: process.env.CONTENT_UNSTORAGE_INIT_DB_SQL,
+    CONTENT_UNSTORAGE_DATASET_METADATA: process.env.CONTENT_UNSTORAGE_DATASET,
   },
 });

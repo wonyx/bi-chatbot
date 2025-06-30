@@ -1,5 +1,6 @@
 import { env } from '@/app/env';
 import { createDBClient } from '@/lib/duckdb/client';
+import { createContentStorage } from '@/lib/storage/client';
 import { tool } from 'ai';
 import { z } from 'zod';
 
@@ -9,6 +10,14 @@ export const listTables = tool({
   execute: async () => {
     console.log('Listing tables in the database');
     const cli = await createDBClient();
-    return cli.getSchema();
+    const schema = await cli.getSchema();
+    const storage = await createContentStorage();
+    const metadata = await storage.getContent(
+      env.CONTENT_UNSTORAGE_DATASET_METADATA,
+    );
+    return {
+      schema,
+      metadata,
+    };
   },
 });
