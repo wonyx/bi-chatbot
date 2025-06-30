@@ -24,11 +24,8 @@ export async function GET(
     return new ChatSDKError('unauthorized:report').toResponse();
   }
 
-  const storage = await createContentStorage(env);
-  const cli = await createDBClient({
-    initSqlDir: env.INIT_DB_DIR,
-    initSqlFile: env.INIT_DB_SQL,
-  });
+  const storage = await createContentStorage();
+  const cli = await createDBClient();
   const content = await storage.getItemRaw(id);
 
   if (!content) {

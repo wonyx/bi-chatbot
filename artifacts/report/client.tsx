@@ -1,5 +1,7 @@
 import { Artifact } from '@/components/create-artifact';
 import { ReportDocument } from '@/components/report-document';
+import { Github } from 'lucide-react';
+import { addReportToGitHub } from '../actions';
 
 interface CustomArtifactMetadata {
   // Define metadata your custom artifact might need—the example below is minimal.
@@ -82,18 +84,19 @@ export const customArtifact = new Artifact<'report', CustomArtifactMetadata>({
   // An optional set of actions exposed in the artifact toolbar.
   actions: [
     {
-      icon: <span>⟳</span>,
-      description: 'Refresh artifact info',
+      icon: <Github />,
+      description: 'Add Report to GitHub',
       // @ts-ignore
-      onClick: ({ appendMessage }) => {
-        console.log('Refreshing custom artifact info...', appendMessage);
-        appendMessage({
-          role: 'user',
-          content: 'Please refresh the info for my custom artifact.',
+      onClick: async (params) => {
+        const { content, metadata } = params;
+        await addReportToGitHub({
+          content,
+          filename: `report-${metadata.documentId}.mdx`,
         });
       },
     },
   ],
+
   // Additional toolbar actions for more control
   toolbar: [
     // {

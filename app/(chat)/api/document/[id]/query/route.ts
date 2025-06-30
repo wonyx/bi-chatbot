@@ -23,10 +23,7 @@ export async function GET(
   if (!session?.user) {
     return new ChatSDKError('unauthorized:report').toResponse();
   }
-  const cli = await createDBClient({
-    initSqlDir: env.INIT_DB_DIR,
-    initSqlFile: env.INIT_DB_SQL,
-  });
+  const cli = await createDBClient();
 
   const document = await getDocumentById({ id });
 

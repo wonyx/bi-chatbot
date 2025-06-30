@@ -2,7 +2,7 @@ import { auth } from '@/app/(auth)/auth';
 import { env } from '@/app/env';
 import { ChatSDKError } from '@/lib/errors';
 import { createContentStorage } from '@/lib/storage/client';
-import { ReportList, } from '@/lib/types';
+import { ReportList } from '@/lib/types';
 import matter from 'gray-matter';
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     return new ChatSDKError('unauthorized:auth').toResponse();
   }
 
-  const storage = createContentStorage(env);
+  const storage = createContentStorage();
   const keys = await storage.keys();
 
   const items = await Promise.all(

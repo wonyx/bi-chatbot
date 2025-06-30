@@ -74,32 +74,25 @@ export function ReportDocument(props: ReportDocumentProps) {
     return ret;
   }, [res]);
 
-  if (isError) {
-    console.error('Error fetching report data:', error);
-    return <div>error</div>;
-  }
-  if (isLoading || !MdxContent) {
+  if (isLoading || !MdxContent || !data) {
     return (
       <div className="flex justify-center items-center size-full">
         <InlineDocumentSkeleton />
       </div>
     );
   }
-  if (!data) {
-    return null;
+  if (isError) {
+    console.error('Error fetching report data:', error);
+    return <div>error</div>;
   }
 
   return frontmatter.layout === 'landscape' ? (
     <LandscapeLayout>
-      <div className="prose prose-gray dark:prose-invert">
-        <MdxContent components={mdxComponents} data={data} />
-      </div>
+      <MdxContent components={mdxComponents} data={data} />
     </LandscapeLayout>
   ) : (
     <PortraitLayout>
-      <div className="prose prose-gray dark:prose-invert">
-        <MdxContent components={mdxComponents} data={data} />
-      </div>
+      <MdxContent components={mdxComponents} data={data} />
     </PortraitLayout>
   );
 }
@@ -120,7 +113,7 @@ function toDataset(res: Record<string, any>): {
   };
 }
 
-function PortraitLayout({ children }: PropsWithChildren) {
+export function PortraitLayout({ children }: PropsWithChildren) {
   return (
     <div className="mx-auto p-2.5 w-full min-w-0 max-w-2xl ">
       <article className="prose prose-gray dark:prose-invert">
@@ -130,7 +123,7 @@ function PortraitLayout({ children }: PropsWithChildren) {
   );
 }
 
-function LandscapeLayout({ children }: PropsWithChildren) {
+export function LandscapeLayout({ children }: PropsWithChildren) {
   return (
     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
       <article

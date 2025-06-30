@@ -12,9 +12,6 @@ jiti('./app/env');
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: 'standalone',
-  experimental: {
-    ppr: true,
-  },
   images: {
     remotePatterns: [
       {
@@ -25,7 +22,6 @@ const nextConfig: NextConfig = {
   transpilePackages: [
     'echarts',
     'zrender',
-    'next-mdx-remote',
     '@t3-oss/env-nextjs',
     '@t3-oss/env-core',
   ],
