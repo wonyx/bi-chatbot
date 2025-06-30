@@ -3,7 +3,6 @@ import { entitlementsByUserType } from '@/lib/ai/entitlements';
 import { systemPrompt, type RequestHints } from '@/lib/ai/prompts';
 import { myProvider } from '@/lib/ai/providers';
 import { createDocument } from '@/lib/ai/tools/create-document';
-import { requestSuggestions } from '@/lib/ai/tools/request-suggestions';
 import { updateDocument } from '@/lib/ai/tools/update-document';
 import { isProductionEnvironment } from '@/lib/constants';
 import {
@@ -27,7 +26,6 @@ import {
 import { generateTitleFromUserMessage } from '../../actions';
 import { postRequestBodySchema, type PostRequestBody } from './schema';
 // import { geolocation } from '@vercel/functions';
-import { generateQueryTool } from '@/lib/ai/tools/generate-sql';
 import { listTables } from '@/lib/ai/tools/list-tables';
 import type { Chat } from '@/lib/db/schema';
 import { ChatSDKError } from '@/lib/errors';
@@ -158,9 +156,9 @@ export async function POST(request: Request) {
               : [
                   'createDocument',
                   'updateDocument',
-                  'requestSuggestions',
+                  // 'requestSuggestions',
                   'listTables',
-                  'generateSQL',
+                  // 'generateSQL',
                 ],
           experimental_transform: smoothStream({ chunking: 'word' }),
           experimental_generateMessageId: generateUUID,
@@ -171,12 +169,12 @@ export async function POST(request: Request) {
               dataStream,
             }),
             updateDocument: updateDocument({ session, dataStream }),
-            requestSuggestions: requestSuggestions({
-              session,
-              dataStream,
-            }),
+            // requestSuggestions: requestSuggestions({
+            //   session,
+            //   dataStream,
+            // }),
             listTables,
-            generateSQL: generateQueryTool,
+            // generateSQL: generateQueryTool,
           },
           onFinish: async ({ response }) => {
             if (session.user?.id) {
